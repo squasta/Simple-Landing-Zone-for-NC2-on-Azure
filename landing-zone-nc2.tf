@@ -1,0 +1,307 @@
+
+#### LANDING ZONE FOR NC2 on Azure (version 1) - Stanislas
+####
+####            __|__
+####     --o--o--(_)--o--o--
+####
+#### improvements to do
+#### make variable for peering names
+#### make variable for VNET IP range and Subnets Adresse space
+
+
+### MUST READ THIS :
+### Networking infrastructure in Azure : https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-setting-up-networking-infrastructure-in-azure-c.html
+### VNets, Subnets and NAT Gateway : https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-configuring-vnets-subnets-and-nat-gateway-t.html
+### VNet and SubNet : https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-creating-a-vnet-and-subnet-in-azure-t.html
+### NAT Gateway : https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-creating-a-nat-gateway-in-azure-t.html
+
+
+
+
+####
+#### VARIABLES DEFINITION
+#### please enter or check your values in configuration.tfvars
+####
+
+variable "ResourceGroupName" {
+  type = string
+  description = "Resource Group Name"
+}
+
+variable "Location" {
+  type = string
+  description = "Azure Region Name"
+}
+
+variable "ClusterVnetName" {
+  type = string
+  description = "Name of VNet for NC2 Hosts"
+}
+
+variable "vnet_dns_adresses" {
+  default = [
+    "8.8.8.8",
+    "1.1.1.1"
+  ]
+}
+
+
+variable "ClusterSubnetName" {
+  type=string
+  description = "Name of the subnet where hosts of cluster are connected"
+}
+
+variable "PCVnetName" {
+  type = string
+  description = "Name of VNet for PC, Flow Gateway"  
+}
+
+variable "PCSubnetName" {
+  type = string
+  description = "Name of Subnet for Prism Central (PC)"  
+}
+
+variable "FgwExternalSubnetName" {
+  type = string
+  description = "Name of External Subnet in PC VNet for Flow Gateway"  
+}
+
+variable "FgwInternalSubnetName" {
+  type = string
+  description = "Name of Internal Subnet in PC VNet for Flow Gateway"  
+}
+
+variable "NATGwClusterName" {
+  type = string
+  description = "Name of NAT Gateway for Cluster Baremetal host"  
+}
+
+variable "PublicIPClusterName" {
+  type = string
+  description = "Name of Azure Public IP used by NAT Gateway in Cluster VNet"    
+}
+
+variable "NATGwPCName" {
+  type = string
+  description = "Name of NAT Gateway for PC VNet (PC and External FGW subnets)"  
+}
+
+variable "PublicIPPCName" {
+  type = string
+  description = "Name of Azure Public IP used by NAT Gateway in PC VNet"    
+}
+
+
+
+###
+### DEFINITION OF MANDATORY NETWORK RESOURCES FOR NC2 Cluster deployment in Azure
+###
+
+
+# Ressource Group
+resource "azurerm_resource_group" "TF_RG" {
+  name     = var.ResourceGroupName
+  location = var.Location
+}
+
+
+# Cluster VNET  (for Baremetal hosts)
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network
+resource "azurerm_virtual_network" "TF_Cluster_VNet" {
+  name                = var.ClusterVnetName
+  location            = azurerm_resource_group.TF_RG.location
+  resource_group_name = azurerm_resource_group.TF_RG.name
+  address_space       = ["10.0.0.0/16"]
+  dns_servers         = var.vnet_dns_adresses    
+}
+
+
+# Bare metal Subnet with delegation to Azure Bar
+# This subnet must be delegated to a servive named Microsoft.BareMetal/AzureHostedService
+# This Subnet must associated with an Azure NAT Gateway 
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
+resource "azurerm_subnet" "TF_SubNet_Cluster" {
+  name                 = var.ClusterSubnetName
+  resource_group_name  = azurerm_resource_group.TF_RG.name
+  virtual_network_name = azurerm_virtual_network.TF_Cluster_VNet.name
+  address_prefixes     = ["10.0.1.0/24"]
+  private_endpoint_network_policies_enabled = false
+
+  delegation {
+    name = "delegation"
+
+    service_delegation {
+      name    = "Microsoft.BareMetal/AzureHostedService"
+    }
+  }
+}
+
+# Azure NAT Gateway for Cluster VNet (Subnet Baremetal hosts)
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway
+# cf. https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-creating-a-nat-gateway-in-azure-t.html
+resource "azurerm_nat_gateway" "TF_NATGw_Cluster" {
+  name                    = var.NATGwClusterName
+  location                = azurerm_resource_group.TF_RG.location
+  resource_group_name     = azurerm_resource_group.TF_RG.name
+  sku_name                = "Standard"  # this is the only option available now
+  tags = {
+    fastpathenabled = "true"
+  }
+}
+
+
+# Azure Public IP for NAT Gateway Cluster
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip
+resource "azurerm_public_ip" "TF_NATGw_PublicIP_Cluster" {
+  name                = var.PublicIPClusterName
+  location            = azurerm_resource_group.TF_RG.location
+  resource_group_name = azurerm_resource_group.TF_RG.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+
+
+# NAT Gateway (Cluster) and Public IP (Cluster) Association
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway_public_ip_association
+resource "azurerm_nat_gateway_public_ip_association" "TF_NATGw_PublicIP_Association_Cluster" {
+  nat_gateway_id       = azurerm_nat_gateway.TF_NATGw_Cluster.id
+  public_ip_address_id = azurerm_public_ip.TF_NATGw_PublicIP_Cluster.id
+}
+
+
+# Subnet and NAT Gateway Association
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_nat_gateway_association
+resource "azurerm_subnet_nat_gateway_association" "TF_Subnet_NATGw_Association_Cluster" {
+  subnet_id      = azurerm_subnet.TF_SubNet_Cluster.id
+  nat_gateway_id = azurerm_nat_gateway.TF_NATGw_Cluster.id
+}
+
+
+# PC VNet 
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network
+resource "azurerm_virtual_network" "TF_PC_VNet" {
+  name                = var.PCVnetName
+  location            = azurerm_resource_group.TF_RG.location
+  resource_group_name = azurerm_resource_group.TF_RG.name
+  address_space       = ["10.1.0.0/16"]
+  dns_servers         = var.vnet_dns_adresses      
+}
+
+
+# Subnet cluster-pc
+# This subnet is for Prismn Central in PC VNet
+# This subnet must be delegated to a servive named Microsoft.BareMetal/AzureHostedService
+# This Subnet must associated with an Azure NAT Gateway 
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
+# a voir pour mettre à zero les networks policy for private endpoint
+resource "azurerm_subnet" "TF_Subnet_Cluster_PC" {
+  name                 = var.PCSubnetName
+  resource_group_name  = azurerm_resource_group.TF_RG.name
+  virtual_network_name = azurerm_virtual_network.TF_PC_VNet.name
+  address_prefixes     = ["10.1.1.0/24"]
+  private_endpoint_network_policies_enabled = false
+
+  delegation {
+  name = "delegation"
+
+    service_delegation {
+      name    = "Microsoft.BareMetal/AzureHostedService"
+    }
+  }
+}
+
+
+# Subnet fgw-external-subnet
+# This subnet is external subnet where is connected external NIC of Flow Gateway (that is an Azure Virtual Machine)
+# This Subnet must associated with an Azure NAT Gateway 
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
+resource "azurerm_subnet" "TF_Fgw_External_Subnet" {
+  name                 = var.FgwExternalSubnetName
+  resource_group_name  = azurerm_resource_group.TF_RG.name
+  virtual_network_name = azurerm_virtual_network.TF_PC_VNet.name
+  address_prefixes     = ["10.1.2.0/24"]
+  private_endpoint_network_policies_enabled = false
+}
+
+
+# Subnet fgw-internal-subnet
+# This subnet is internal subnet where is connected internal NIC of Flow Gateway (that is an Azure Virtual Machine)
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
+resource "azurerm_subnet" "TF_Fgw_Internal_Subnet" {
+  name                 = var.FgwInternalSubnetName
+  resource_group_name  = azurerm_resource_group.TF_RG.name
+  virtual_network_name = azurerm_virtual_network.TF_PC_VNet.name
+  address_prefixes     = ["10.1.3.0/24"]
+  private_endpoint_network_policies_enabled = false
+}
+
+
+# Azure NAT Gateway for PC VNet (attached to FgwExternalSubnet and PCSubnet)
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway
+# cf. https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-creating-a-nat-gateway-in-azure-t.html
+resource "azurerm_nat_gateway" "TF_NATGw_PC" {
+  name                    = var.NATGwPCName
+  location                = azurerm_resource_group.TF_RG.location
+  resource_group_name     = azurerm_resource_group.TF_RG.name
+  sku_name                = "Standard"  # this is the only option available now
+  tags = {
+    fastpathenabled = "true"
+  }
+}
+
+
+# Azure Public IP for NAT Gateway PC
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip
+resource "azurerm_public_ip" "TF_NATGw_PublicIP_PC" {
+  name                = var.PublicIPPCName
+  location            = azurerm_resource_group.TF_RG.location
+  resource_group_name = azurerm_resource_group.TF_RG.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+
+
+# NAT Gateway (Cluster) and Public IP (Cluster) Association
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway_public_ip_association
+resource "azurerm_nat_gateway_public_ip_association" "TF_NATGw_PublicIP_Association_PC" {
+  nat_gateway_id       = azurerm_nat_gateway.TF_NATGw_PC.id
+  public_ip_address_id = azurerm_public_ip.TF_NATGw_PublicIP_PC.id
+}
+
+
+# Subnet and NAT Gateway Association (PC NAT GW + PC Subnet)
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_nat_gateway_association
+resource "azurerm_subnet_nat_gateway_association" "TF_Subnet_NATGw_Association_Cluster_PC" {
+  subnet_id      = azurerm_subnet.TF_Subnet_Cluster_PC.id
+  nat_gateway_id = azurerm_nat_gateway.TF_NATGw_PC.id
+}
+
+
+# Subnet and NAT Gateway Association (PC NAT GW + FGW external Subnet)
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_nat_gateway_association
+resource "azurerm_subnet_nat_gateway_association" "TF_Subnet_NATGw_Association_PC" {
+  subnet_id      = azurerm_subnet.TF_Fgw_External_Subnet.id
+  nat_gateway_id = azurerm_nat_gateway.TF_NATGw_PC.id
+}
+
+
+# Peering between Cluster VNet and PC VNet
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_peering
+
+resource "azurerm_virtual_network_peering" "TF_Peering_Cluster2PC" {
+  name                      = "Peer-ClusterVNet-to-PCVNet"
+  resource_group_name       = azurerm_resource_group.TF_RG.name
+  virtual_network_name      = azurerm_virtual_network.TF_Cluster_VNet.name
+  remote_virtual_network_id = azurerm_virtual_network.TF_PC_VNet.id
+}
+
+
+# Peering between PC VNet and Cluster VNet
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_peering
+resource "azurerm_virtual_network_peering" "TF_Peering_PC2Cluster" {
+  name                      = "Peer-PCVNet-to-ClusterVNet"
+  resource_group_name       = azurerm_resource_group.TF_RG.name
+  virtual_network_name      = azurerm_virtual_network.TF_PC_VNet.name
+  remote_virtual_network_id = azurerm_virtual_network.TF_Cluster_VNet.id
+}
+
