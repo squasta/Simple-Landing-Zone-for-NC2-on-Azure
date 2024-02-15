@@ -15,6 +15,8 @@ This repo contains Terraform files to deploy all Azure network components needed
 
 You can also clone this repo in your Azure Cloud Shell (that has all tools installed)
 
+## Step by step operations
+
 Edit [configuration.tfvars](configuration.tfvars) to define your Azure resources names.
 
 If you want to define your own IP ranges, edit [landing-zone-nc2.tf](landing-zone-nc2.tf)  (I will change that later to put everything as a variable)
