@@ -43,6 +43,8 @@ terraform apply --var-file=mconfiguration.tfvars
 
 4. Wait until the end of deployment (It should take less than 1 minute)
 
+<img width='600' src='./images/AzureLZ.png'/> 
+
 5. Go to Nutanix [NC2 Portal](https://cloud.nutanix.com) https://cloud.nutanix.com and start your Nutanix Cluster deployment wizard. In steps 4 (Network), 5 (Prism Central) and 6 (Flow Networking) select the Virtuals Networks and Subnets created in step 3 using terraform
 
 6. After the deployment is successfull, you can add connectivity with on-premises or other Azure VNet or services by peering Hub Vnet or Hub vWAN
