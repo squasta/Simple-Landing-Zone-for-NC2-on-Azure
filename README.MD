@@ -1,4 +1,4 @@
-## Nutanix Cloud Cluster (NC2) Simple Landing Zone for POC
+## Nutanix Cloud Cluster (NC2) on Azure - Simple Landing Zone for POC
 
 This repo contains Terraform files to deploy all Azure network components needed to deploy Nutanix Cloud Cluster(NC2) on Azure Baremetal
 
