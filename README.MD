@@ -2,6 +2,7 @@
 
 This repo contains Terraform files to deploy all Azure network components needed to deploy Nutanix Cloud Cluster(NC2) on Azure Baremetal
 
+<img width='600' src='./images/NC2AzureLZ.png'/> 
 
 ## Prerequisites
 
