@@ -9,7 +9,7 @@ This repo contains Terraform files to deploy all Azure network components needed
 
 
 - An Azure Subscription with enough privileges (create RG, AKS...)
-- Azure CLI 2.37 or >: <https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest>
+- Azure CLI 2.57 or >: <https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest>
    And you need to activate features that are still in preview and add extension aks-preview to azure CLI (az extension add --name aks-preview)
 - Terraform CLI 1.5 or > : <https://www.terraform.io/downloads.html>
 
