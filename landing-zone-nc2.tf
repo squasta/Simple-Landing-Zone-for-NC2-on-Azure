@@ -107,6 +107,9 @@ resource "azurerm_resource_group" "TF_RG" {
 
 # Cluster VNET  (for Baremetal hosts)
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network
+# NC2 does not support Use of 192.168.5.0/24 CIDR for the VNet being used to deploy the NC2 on Azure cluster
+# All Nutanix nodes use that CIDR for communication between the CVM and the installed hypervisor.
+# cf. https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-getting-ready-for-deployment-c.html
 resource "azurerm_virtual_network" "TF_Cluster_VNet" {
   name                = var.ClusterVnetName
   location            = azurerm_resource_group.TF_RG.location
@@ -120,6 +123,7 @@ resource "azurerm_virtual_network" "TF_Cluster_VNet" {
 # This subnet must be delegated to a servive named Microsoft.BareMetal/AzureHostedService
 # This Subnet must associated with an Azure NAT Gateway 
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
+
 resource "azurerm_subnet" "TF_SubNet_Cluster" {
   name                 = var.ClusterSubnetName
   resource_group_name  = azurerm_resource_group.TF_RG.name
@@ -179,6 +183,8 @@ resource "azurerm_subnet_nat_gateway_association" "TF_Subnet_NATGw_Association_C
 
 # PC VNet 
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network
+# NC2 does not support Use of IPs 192.168.0.0/16, 10.100.0.0/16, 10.200.0.0/24, or 10.200.0.0/22 for Prism Central VNet
+# cf. https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-getting-ready-for-deployment-c.html
 resource "azurerm_virtual_network" "TF_PC_VNet" {
   name                = var.PCVnetName
   location            = azurerm_resource_group.TF_RG.location
@@ -193,7 +199,6 @@ resource "azurerm_virtual_network" "TF_PC_VNet" {
 # This subnet must be delegated to a servive named Microsoft.BareMetal/AzureHostedService
 # This Subnet must associated with an Azure NAT Gateway 
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
-# a voir pour mettre à zero les networks policy for private endpoint
 resource "azurerm_subnet" "TF_Subnet_Cluster_PC" {
   name                 = var.PCSubnetName
   resource_group_name  = azurerm_resource_group.TF_RG.name
