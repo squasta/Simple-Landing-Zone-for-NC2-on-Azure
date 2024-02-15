@@ -17,6 +17,9 @@ You can also clone this repo in your Azure Cloud Shell (that has all tools insta
 
 
 
+
+
+
 1. Terraform Init phase  
 
 ```bash
