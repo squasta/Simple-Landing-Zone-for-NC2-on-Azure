@@ -71,6 +71,11 @@ variable "FgwInternalSubnetName" {
   description = "Name of Internal Subnet in PC VNet for Flow Gateway"  
 }
 
+variable "BGPSubnetName" {
+  type = string
+  description = "Name of BGP Subnet in PC VNet for BGP VM"  
+}
+
 variable "NATGwClusterName" {
   type = string
   description = "Name of NAT Gateway for Cluster Baremetal host"  
@@ -237,6 +242,18 @@ resource "azurerm_subnet" "TF_Fgw_Internal_Subnet" {
   resource_group_name  = azurerm_resource_group.TF_RG.name
   virtual_network_name = azurerm_virtual_network.TF_PC_VNet.name
   address_prefixes     = ["10.1.3.0/24"]
+  private_endpoint_network_policies_enabled = false
+}
+
+
+# Subnet bgp-subnet
+# This subnet is internal subnet where is connected internal NIC of Flow Gateway (that is an Azure Virtual Machine)
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
+resource "azurerm_subnet" "TF_BGP_Subnet" {
+  name                 = var.BGPSubnetName
+  resource_group_name  = azurerm_resource_group.TF_RG.name
+  virtual_network_name = azurerm_virtual_network.TF_PC_VNet.name
+  address_prefixes     = ["10.1.4.0/24"]
   private_endpoint_network_policies_enabled = false
 }
 
