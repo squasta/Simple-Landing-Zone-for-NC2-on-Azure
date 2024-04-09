@@ -247,8 +247,9 @@ resource "azurerm_subnet" "TF_Fgw_Internal_Subnet" {
 
 
 # Subnet bgp-subnet
-# This subnet is internal subnet where is connected internal NIC of Flow Gateway (that is an Azure Virtual Machine)
+# This subnet is BGP subnet where are connected BGP Speaker/GW (that are Azure Virtual Machine)
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
+# cf. https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-networking-configurations-c.html 
 resource "azurerm_subnet" "TF_BGP_Subnet" {
   name                 = var.BGPSubnetName
   resource_group_name  = azurerm_resource_group.TF_RG.name
