@@ -258,6 +258,19 @@ resource "azurerm_subnet" "TF_BGP_Subnet" {
   private_endpoint_network_policies_enabled = false
 }
 
+# Subnet AzureBastionSubnet
+# This subnet is for Azure Bastion
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
+# more info on Azure Bastion : https://docs.microsoft.com/en-us/azure/bastion/bastion-create-host-portal
+# resource "azurerm_subnet" "TF_Azure_Bastion_Subnet" {
+#   name                 = "AzureBastionSubnet"
+#   resource_group_name  = azurerm_resource_group.TF_RG.name
+#   virtual_network_name = azurerm_virtual_network.TF_PC_VNet.name
+#   address_prefixes     = ["10.1.5.0/26"]
+#   private_endpoint_network_policies_enabled = false
+# }
+
+
 
 # Azure NAT Gateway for PC VNet (attached to FgwExternalSubnet and PCSubnet)
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway
@@ -327,4 +340,3 @@ resource "azurerm_virtual_network_peering" "TF_Peering_PC2Cluster" {
   virtual_network_name      = azurerm_virtual_network.TF_PC_VNet.name
   remote_virtual_network_id = azurerm_virtual_network.TF_Cluster_VNet.id
 }
-
