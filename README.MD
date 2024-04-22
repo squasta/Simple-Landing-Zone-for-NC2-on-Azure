@@ -7,6 +7,7 @@ This repo contains Terraform files to deploy all Azure network components needed
 ## Prerequisites
 
 - All prerequisites for NC2 : https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-getting-ready-for-deployment-c.html
+- For AOS < 6.7 (on AOS 6.7 or higher, Flow Gateways are deployed in a dedicated Flow Gateway VNet)
 
 
 - An Azure Subscription with enough privileges (create RG, AKS...)
