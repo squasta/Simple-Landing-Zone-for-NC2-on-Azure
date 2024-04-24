@@ -39,7 +39,7 @@ terraform plan --var-file=configuration.tfvars
 3. Terraform deployment phase (add TF_LOG=info at the beginning of the following command line if you want to see what's happen during deployment)
 
 ```bash
-terraform apply --var-file=mconfiguration.tfvars
+terraform apply --var-file=configuration.tfvars
 ```
 
 4. Wait until the end of deployment (It should take less than 1 minute)
@@ -49,4 +49,13 @@ terraform apply --var-file=mconfiguration.tfvars
 5. Go to Nutanix [NC2 Portal](https://cloud.nutanix.com) https://cloud.nutanix.com and start your Nutanix Cluster deployment wizard. In steps 4 (Network), 5 (Prism Central) and 6 (Flow Networking) select the Virtuals Networks and Subnets created in step 3 using terraform
 
 6. After the deployment is successfull, you can add connectivity with on-premises or other Azure VNet or services by peering an Hub Vnet or Virtual vWAN vHub
+
+7. Use the solution and configure Nutanix features like VPC, categories...
+
+8. When you want to destroy the Nutanix Cluster, use the NC2 Portal (https://cloud.nutanix.com) to terminate it.
+
+9. After cluster terminaison, you can destroy the landing zone using the following command : 
+```bash
+terraform destroy --var-file=configuration.tfvars
+```
 
