@@ -17,87 +17,6 @@
 
 
 
-
-####
-#### VARIABLES DEFINITION
-#### please enter or check your values in configuration.tfvars
-####
-
-variable "ResourceGroupName" {
-  type = string
-  description = "Resource Group Name"
-}
-
-variable "Location" {
-  type = string
-  description = "Azure Region Name"
-}
-
-variable "ClusterVnetName" {
-  type = string
-  description = "Name of VNet for NC2 Hosts"
-}
-
-variable "vnet_dns_adresses" {
-  default = [
-    "8.8.8.8",
-    "1.1.1.1"
-  ]
-}
-
-
-variable "ClusterSubnetName" {
-  type=string
-  description = "Name of the subnet where hosts of cluster are connected"
-}
-
-variable "PCVnetName" {
-  type = string
-  description = "Name of VNet for PC, Flow Gateway"  
-}
-
-variable "PCSubnetName" {
-  type = string
-  description = "Name of Subnet for Prism Central (PC)"  
-}
-
-variable "FgwExternalSubnetName" {
-  type = string
-  description = "Name of External Subnet in PC VNet for Flow Gateway"  
-}
-
-variable "FgwInternalSubnetName" {
-  type = string
-  description = "Name of Internal Subnet in PC VNet for Flow Gateway"  
-}
-
-variable "BGPSubnetName" {
-  type = string
-  description = "Name of BGP Subnet in PC VNet for BGP VM"  
-}
-
-variable "NATGwClusterName" {
-  type = string
-  description = "Name of NAT Gateway for Cluster Baremetal host"  
-}
-
-variable "PublicIPClusterName" {
-  type = string
-  description = "Name of Azure Public IP used by NAT Gateway in Cluster VNet"    
-}
-
-variable "NATGwPCName" {
-  type = string
-  description = "Name of NAT Gateway for PC VNet (PC and External FGW subnets)"  
-}
-
-variable "PublicIPPCName" {
-  type = string
-  description = "Name of Azure Public IP used by NAT Gateway in PC VNet"    
-}
-
-
-
 ###
 ### DEFINITION OF MANDATORY NETWORK RESOURCES FOR NC2 Cluster deployment in Azure
 ###
@@ -262,14 +181,13 @@ resource "azurerm_subnet" "TF_BGP_Subnet" {
 # This subnet is for Azure Bastion
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
 # more info on Azure Bastion : https://docs.microsoft.com/en-us/azure/bastion/bastion-create-host-portal
-# resource "azurerm_subnet" "TF_Azure_Bastion_Subnet" {
-#   name                 = "AzureBastionSubnet"
-#   resource_group_name  = azurerm_resource_group.TF_RG.name
-#   virtual_network_name = azurerm_virtual_network.TF_PC_VNet.name
-#   address_prefixes     = ["10.1.5.0/26"]
-#   private_endpoint_network_policies_enabled = false
-# }
-
+resource "azurerm_subnet" "TF_Azure_Bastion_Subnet" {
+  name                 = "AzureBastionSubnet"
+  resource_group_name  = azurerm_resource_group.TF_RG.name
+  virtual_network_name = azurerm_virtual_network.TF_PC_VNet.name
+  address_prefixes     = ["10.1.5.0/26"]
+  private_endpoint_network_policies_enabled = false
+}
 
 
 # Azure NAT Gateway for PC VNet (attached to FgwExternalSubnet and PCSubnet)
