@@ -4,6 +4,7 @@ This repo contains Terraform files to deploy all Azure network components needed
 
 <img width='400' src='./images/PlaneLZ.png'/> 
 
+
 ## Prerequisites
 
 - All prerequisites for NC2 : https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-getting-ready-for-deployment-c.html
@@ -46,9 +47,13 @@ terraform apply --var-file=configuration.tfvars
 
 <img width='600' src='./images/NC2AzureLZ.png'/> 
 
+If you want to connect to Prism Element or Prism Central through Internet, there is an option to enable an Azure Bastion instance and a Windows Server 2022 Virtual Machine Jumbox
+
+<img width='400' src='./images/NC2AzureLZ-bastion.png'/> 
+
 5. Go to Nutanix [NC2 Portal](https://cloud.nutanix.com) https://cloud.nutanix.com and start your Nutanix Cluster deployment wizard. In steps 4 (Network), 5 (Prism Central) and 6 (Flow Networking) select the Virtuals Networks and Subnets created in step 3 using terraform
 
-6. After the deployment is successfull, you can add connectivity with on-premises or other Azure VNet or services by peering an Hub Vnet or Virtual vWAN vHub
+6. After the deployment is successfull, you can add connectivity with on-premises or other Azure VNet or services by peering an Hub Vnet or Virtual vWAN vHub. If you enabled AzureBastion and Jumpbox VM, you can login to the Jumbox VM and connect Prism Element or Prism Central through a web browser.
 
 7. Use the solution and configure Nutanix features like VPC, categories...
 
