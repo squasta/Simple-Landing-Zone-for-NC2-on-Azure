@@ -53,6 +53,12 @@ If you want to connect to Prism Element or Prism Central through Internet, there
 
 5. Go to Nutanix [NC2 Portal](https://cloud.nutanix.com) https://cloud.nutanix.com and start your Nutanix Cluster deployment wizard. In steps 4 (Network), 5 (Prism Central) and 6 (Flow Networking) select the Virtuals Networks and Subnets created in step 3 using terraform
 
+<img width='600' src='./images/Step4.png'/> 
+
+<img width='600' src='./images/Step5.png'/> 
+
+<img width='600' src='./images/Step6.png'/> 
+
 6. After the deployment is successfull, you can add connectivity with on-premises or other Azure VNet or services by peering an Hub Vnet or Virtual vWAN vHub. If you enabled AzureBastion and Jumpbox VM, you can login to the Jumbox VM and connect Prism Element or Prism Central through a web browser.
 
 7. Use the solution and configure Nutanix features like VPC, categories...
