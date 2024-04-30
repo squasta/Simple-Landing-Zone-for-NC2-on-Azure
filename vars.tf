@@ -114,12 +114,16 @@ variable "HostnameVMJumbox" {
   description = "Hostname of Jumpbox VM"
 }
 
+# Enable the creation of Azure Bastion
+# 0 = disabled, 1 = enabled
 variable "EnableAzureBastion" {
   type = number
   description = "Enable Azure Bastion"
   default = 0
 }
 
+# Enable the creation of a Jumpbox VM
+# 0 = disabled, 1 = enabled
 variable "EnableJumboxVM" {
   type = number
   description = "Enable Azure Bastion"

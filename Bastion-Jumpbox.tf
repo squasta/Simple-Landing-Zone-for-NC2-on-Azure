@@ -51,7 +51,7 @@ resource "azurerm_windows_virtual_machine" "TF_VM_Jumbox" {
   name                  = var.VMJumpboxName
   resource_group_name   = azurerm_resource_group.TF_RG.name
   location              = azurerm_resource_group.TF_RG.location
-  size                  = "Standard_B2ms"   # B2ms or greater is better for good experience
+  size                  = var.AzureVMSize    # B2ms or greater is better for good experience
   admin_username        = var.AdminUsername
   admin_password        = var.AdminPassword
   network_interface_ids = [azurerm_network_interface.TF_VM_Jumbox_Nic[0].id]
