@@ -18,5 +18,5 @@ AdminPassword="Password1234!ofcoursesecure-pleasedontuseitlikethis"
 VMBastionNicName="jumbox-nic-germanywestcentral"
 VMJumpboxName="jumbox-germanywestcentral"
 HostnameVMJumbox="myjumbox"
-EnableAzureBastion=0
-EnableJumboxVM=0
+EnableAzureBastion=1
+EnableJumboxVM=1

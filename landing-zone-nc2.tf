@@ -60,6 +60,7 @@ resource "azurerm_subnet" "TF_SubNet_Cluster" {
 
     service_delegation {
       name    = "Microsoft.BareMetal/AzureHostedService"
+      actions = ["Microsoft.Network/networkinterfaces/*", "Microsoft.Network/virtualNetworks/subnets/join/action"]
     }
   }
 }
@@ -135,6 +136,7 @@ resource "azurerm_subnet" "TF_Subnet_Cluster_PC" {
 
     service_delegation {
       name    = "Microsoft.BareMetal/AzureHostedService"
+      actions = ["Microsoft.Network/networkinterfaces/*", "Microsoft.Network/virtualNetworks/subnets/join/action"]
     }
   }
 }
