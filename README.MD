@@ -70,3 +70,16 @@ If you want to connect to Prism Element or Prism Central through Internet, there
 terraform destroy --var-file=configuration.tfvars
 ```
 
+## How much does it cost to test this landing zone ?
+
+It's very cheap to test and customize this simple landing zone.
+
+You can use **infracost** (available on https://www.infracost.io/) to check the estimate price for 1 month. Here is an exemple for Azure Germany West Central region
+
+ :exclamation: Important : this landing zone cost estimation does not include the cost of Azure Baremetal instance(s) used as node(s) in the Nutanix Cluster. 
+
+<img width='800' src='./images/InfracostNC2LDZAzure.png'/> 
+
+ Please have a look of metal instances prices here : https://azuremarketplace.microsoft.com/en-us/marketplace/apps/nutanixinc.nc2_azure?tab=overview. Pricing is per instance-hour consumed for each instance, from the time an instance is launched until it is terminated or stopped. 
+
+ Note : you don't need Azure Bastion or Jumbox 24/7. You can simply enable or disable these resources in configuration.tfvars file (0= disabled , 1=enabled) 
