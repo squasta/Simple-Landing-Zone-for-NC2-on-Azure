@@ -43,7 +43,7 @@ resource "azurerm_virtual_network" "TF_Cluster_VNet" {
 }
 
 
-# Bare metal Subnet with delegation to Azure Bar
+# Bare metal Subnet with delegation to Azure Bare
 # This subnet must be delegated to a servive named Microsoft.BareMetal/AzureHostedService
 # This Subnet must associated with an Azure NAT Gateway 
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet

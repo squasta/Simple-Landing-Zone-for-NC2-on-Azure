@@ -14,13 +14,15 @@ resource "azurerm_public_ip" "TF_bastion_public_ip" {
 
 # An Azure Bastion Host
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/bastion_host
+# Azure Bastion documentation : https://learn.microsoft.com/en-us/azure/bastion/configuration-settings 
 # Azure Bastion SKU https://learn.microsoft.com/en-us/azure/bastion/configuration-settings 
+# Azure Bastion pricing : https://azure.microsoft.com/en-us/pricing/details/azure-bastion/
 resource "azurerm_bastion_host" "TF_bastion_host" {
   count               = var.EnableAzureBastion
   name                = var.AzureBastionHostName
   location            = azurerm_resource_group.TF_RG.location
   resource_group_name = azurerm_resource_group.TF_RG.name
-  sku                 = "Basic"    # Developper SKU is still in preview but will be cheaper
+  sku                 = var.AzureBastionSKU    
   ip_configuration {
     name                 = "bastion-ip-config"
     subnet_id            = azurerm_subnet.TF_Azure_Bastion_Subnet.id

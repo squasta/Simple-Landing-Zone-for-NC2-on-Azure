@@ -12,6 +12,11 @@ variable "ResourceGroupName" {
 variable "Location" {
   type = string
   description = "Azure Region Name"
+  # cf. https://developer.hashicorp.com/terraform/language/expressions/custom-conditions#input-variable-validation
+  validation {
+    condition = contains(["eastus", "eastus2", "westus", "westus2", "centralus", "northcentralus", "southcentralus", "westcentralus", "canadacentral", "canadaeast", "brazilsouth", "northeurope", "westeurope", "eastasia", "southeastasia", "japanwest", "japaneast", "australiaeast", "australiasoutheast", "australiacentral", "australiacentral2", "southindia", "centralindia", "westindia", "koreacentral", "koreasouth", "ukwest", "uksouth", "francecentral", "francesouth", "norwayeast", "norwaywest", "switzerlandnorth", "switzerlandwest", "germanywestcentral", "germanynorth", "germanynortheast", "uaenorth", "uaecentral", "southafricanorth", "southafricawest", "eastus2euap", "westus3", "southeastasia2", "brazilsoutheast", "australiacentral", "australiasoutheast", "japaneast2", "koreasouth2", "southindia", "centralindia", "westindia", "southafricanorth", "southafricawest", "norwayeast", "norwaywest", "switzerlandnorth", "switzerlandwest", "germanywestcentral", "germanynorth", "germanynortheast", "uaenorth", "uaecentral", "southafricanorth", "southafricawest", "eastus2euap", "westus3", "southeastasia2", "brazilsoutheast", "australiacentral", "australiasoutheast", "japaneast2", "koreasouth2", "southindia", "centralindia", "westindia", "southafricanorth", "southafricawest", "norwayeast", "norwaywest", "switzerlandnorth", "switzerlandwest", "germanywestcentral", "germanynorth", "germanynortheast", "uaenorth"], var.Location)
+    error_message = "Invalid Azure Region Name"
+  }
 }
 
 variable "ClusterVnetName" {
@@ -24,6 +29,10 @@ variable "vnet_dns_adresses" {
     "8.8.8.8",
     "1.1.1.1"
   ]
+  validation {
+    condition = length(var.vnet_dns_adresses) > 0
+    error_message = "At least one DNS server must be provided"
+  }
 }
 
 variable "ClusterSubnetName" {
@@ -138,4 +147,17 @@ variable "AzureVMSize" {
   type = string
   description = "Size of Azure VM"
   default = "Standard_B2ms"
+}
+
+
+## Azure Bastion SKU
+# The Azure Bastion SKU to use. Possible values are Developer, Basic, Standard or Premium.
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/bastion_host
+# Developper SKU is free of charge
+# Developer SKU is available in the following Azure Region
+# Central US EUAP, East US 2 EUAP, West Central US, North Central US, West US, North Europe
+variable "AzureBastionSKU" {
+  type = string
+  description = "Azure Bastion SKU"
+  default = "Basic"
 }
