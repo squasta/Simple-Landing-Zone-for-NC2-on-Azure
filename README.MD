@@ -22,7 +22,7 @@ You can also clone this repo in your Azure Cloud Shell (that has all tools insta
 
 Edit [configuration.tfvars](configuration.tfvars) to define your Azure resources names.
 
-If you want to define your own IP ranges, edit [landing-zone-nc2.tf](landing-zone-nc2.tf)  (I will change that later to put everything as a variable)
+If you want to define your own IP ranges, edit [landing-zone-nc2.tf](landing-zone-nc2.tf) (I will change that later to put everything as a variable)
  
 
 1. Terraform Init phase  
@@ -47,7 +47,7 @@ terraform apply --var-file=configuration.tfvars
 
 <img width='800' src='./images/AzureLZNC2VPN.png'/> 
 
-If you want to connect to Prism Element or Prism Central through Internet, there is an option to enable an Azure Bastion instance and a Windows Server 2022 Virtual Machine Jumbox
+If you want to connect to Prism Element or Prism Central through Internet, there is an option to enable an Azure Bastion instance and a Windows Server 2022 Virtual Machine Jumbox. You can also deploy as an option a virtual machine in the Hub Virtual Network and another in the "on premise" Virtual Network 
 
 <img width='800' src='./images/AzureLZNC2VPNBastion.png'/> 
 
@@ -85,3 +85,5 @@ You can use **infracost** (available on https://www.infracost.io/) to check the 
  Notes : 
  - you don't need Azure Bastion or Jumbox 24/7. You can simply enable or disable these resources in configuration.tfvars file (EnableJumboxVM | 0= disabled , 1=enabled) 
  - you don't need "On prem" Virtual Machine 24/7. You can simply enable or disable these resources in configuration.tfvars file (EnableVM4testingNetwork_OnPremises | 0= disabled , 1=enabled) 
+ - you don't need "On Hub" Virtual Machine 24/7. You can simply enable or disable these resources in configuration.tfvars file (EnableVM4testingNetwork_HubVnet | 0= disabled , 1=enabled) 
+
