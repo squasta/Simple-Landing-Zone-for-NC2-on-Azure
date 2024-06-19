@@ -45,11 +45,11 @@ terraform apply --var-file=configuration.tfvars
 
 4. Wait until the end of deployment (It should take less than 1 minute)
 
-<img width='800' src='./images/NC2AzureLZ.png'/> 
+<img width='800' src='./images/AzureLZNC2VPN.png'/> 
 
 If you want to connect to Prism Element or Prism Central through Internet, there is an option to enable an Azure Bastion instance and a Windows Server 2022 Virtual Machine Jumbox
 
-<img width='800' src='./images/NC2AzureLZ-bastion.png'/> 
+<img width='800' src='./images/AzureLZNC2VPNBastion.png'/> 
 
 5. Go to Nutanix [NC2 Portal](https://cloud.nutanix.com) https://cloud.nutanix.com and start your Nutanix Cluster deployment wizard. In steps 4 (Network), 5 (Prism Central) and 6 (Flow Networking) select the Virtuals Networks and Subnets created in step 3 using terraform
 
