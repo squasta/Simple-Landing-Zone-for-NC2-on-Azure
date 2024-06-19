@@ -175,3 +175,12 @@ variable "VPNSiteToSiteSharedKey" {
   description = "Shared Key for VPN Site to Site"
   sensitive = true
 }
+
+
+# Enable a Virtual Machine for testing network connectivity to On-Premises
+# 0 = disabled, 1 = enabled
+variable "EnableVM4testingNetwork_OnPremises" {
+  type = number
+  description = "Enable a Virtual Machine for testing network connectivity to On-Premises"
+  default = 0
+}

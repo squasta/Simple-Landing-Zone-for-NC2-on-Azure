@@ -23,3 +23,4 @@ AzureBastionSKU="Basic"
 EnableJumboxVM=0
 HubVNetName= "hub-vnet-germanywestcentral"
 VPNSiteToSiteSharedKey="SharedKey123"
+EnableVM4testingNetwork_OnPremises=0

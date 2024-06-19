@@ -11,7 +11,7 @@ resource "azurerm_windows_virtual_machine" "TF_VM4testingNetwork_OnPremises" {
   size                  = var.AzureVMSize    # B2ms or greater is better for good experience
   admin_username        = var.AdminUsername
   admin_password        = var.AdminPassword
-  network_interface_ids = [azurerm_network_interface.TF_VM4testingNetwork_OnPremises_Nic.id]
+  network_interface_ids = [azurerm_network_interface.TF_VM4testingNetwork_OnPremises_Nic[0].id]
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
