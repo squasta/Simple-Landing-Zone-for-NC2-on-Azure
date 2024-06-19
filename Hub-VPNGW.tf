@@ -95,7 +95,6 @@ resource "azurerm_virtual_network_peering" "TF_Peering_Cluster2Hub" {
   allow_virtual_network_access = true
   use_remote_gateways = true
   # `allow_gateway_transit` must be set to false for vnet Global Peering
-  allow_gateway_transit = true
   depends_on = [ azurerm_virtual_network.TF_HubVNet, azurerm_virtual_network.TF_Cluster_VNet ]
 }
 
@@ -108,6 +107,7 @@ resource "azurerm_virtual_network_peering" "TF_Peering_Hub2Cluster" {
   virtual_network_name      = azurerm_virtual_network.TF_HubVNet.name
   remote_virtual_network_id = azurerm_virtual_network.TF_Cluster_VNet.id
   allow_virtual_network_access = true
+  allow_gateway_transit = true
   depends_on = [ azurerm_virtual_network.TF_HubVNet, azurerm_virtual_network.TF_Cluster_VNet ]
 }
 
@@ -122,7 +122,6 @@ resource "azurerm_virtual_network_peering" "TF_Peering_PC2Hub" {
   allow_virtual_network_access = true
   use_remote_gateways = true
   # `allow_gateway_transit` must be set to false for vnet Global Peering
-  allow_gateway_transit = true
   depends_on = [ azurerm_virtual_network.TF_HubVNet, azurerm_virtual_network.TF_PC_VNet ]
 }
 
@@ -136,6 +135,7 @@ resource "azurerm_virtual_network_peering" "TF_Peering_Hub2PC" {
   virtual_network_name      = azurerm_virtual_network.TF_HubVNet.name
   remote_virtual_network_id = azurerm_virtual_network.TF_PC_VNet.id
   allow_virtual_network_access = true
+  allow_gateway_transit = true
   depends_on = [ azurerm_virtual_network.TF_HubVNet, azurerm_virtual_network.TF_PC_VNet ]
 }
 

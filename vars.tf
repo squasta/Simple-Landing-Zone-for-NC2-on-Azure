@@ -184,3 +184,11 @@ variable "EnableVM4testingNetwork_OnPremises" {
   description = "Enable a Virtual Machine for testing network connectivity to On-Premises"
   default = 0
 }
+
+# Enable a Virtual Machine for testing network connectivity to Hub VNet
+# 0 = disabled, 1 = enabled
+variable "EnableVM4testingNetwork_HubVnet" {
+  type = number
+  description = "Enable a Virtual Machine for testing network connectivity to Hub VNet"
+  default = 0
+}
