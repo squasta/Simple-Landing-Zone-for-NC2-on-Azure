@@ -161,3 +161,17 @@ variable "AzureBastionSKU" {
   description = "Azure Bastion SKU"
   default = "Basic"
 }
+
+
+## Hub VNet name
+variable "HubVNetName" {
+  type = string
+  description = "A VNet named Hub-VNet"
+}
+
+## VPN site to site Shared Key
+variable "VPNSiteToSiteSharedKey" {
+  type = string
+  description = "Shared Key for VPN Site to Site"
+  sensitive = true
+}
