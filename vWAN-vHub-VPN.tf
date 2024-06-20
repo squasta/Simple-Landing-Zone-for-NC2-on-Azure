@@ -50,3 +50,40 @@ resource "azurerm_virtual_hub_connection" "TF_VhubConn_PC" {
   remote_virtual_network_id = azurerm_virtual_network.TF_PC_VNet.id
 }
 
+
+## Virtual WAN site to site gateway
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/vpn_gateway
+resource "azurerm_vpn_gateway" "TF_VPNGW_Vhub" {
+  name                = "VPNGW-NC2-virtualhub"
+  location            = azurerm_resource_group.TF_RG.location
+  resource_group_name = azurerm_resource_group.TF_RG.name
+  virtual_hub_id      = azurerm_virtual_hub.TF_Vhub.id
+  scale_unit          = 1
+}
+
+
+
+## Virtual WAN VPN Site
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_wan_vpn_site
+# Site: This resource is used for site-to-site connections only. The site resource is vpnsite. 
+# It represents your on-premises VPN device and its settings.
+# The site resource is used to configure the on-premises VPN device to connect to the virtual hub.
+# cf. https://learn.microsoft.com/en-us/azure/virtual-wan/virtual-wan-site-to-site-portal 
+
+# resource "azurerm_virtual_wan_vpn_site" "TF_VpnSite" {
+#   name                = "NC2-vpnSite"
+#   resource_group_name = azurerm_resource_group.TF_RG.name
+#   location            = azurerm_resource_group.TF_RG.location
+#   virtual_wan_id      = azurerm_virtual_wan.TF_Vwan.id
+#   address_space       = ["192.168.250.0/24"]
+#     is_security_site    = false
+#     vpn_site_links {
+#     name = "NC2-vpnSiteLink"
+#     virtual_hub_id = azurerm_virtual_hub.TF_Vhub.id
+#     vpn_device_ip_address = "8.8.8.8"   # external public IP
+#     vpn_device_vendor = "Cisco"
+#     vpn_device_model = "ASA 5505"
+#     vpn_device_fqdn = "vpn.contoso.com"
+#     shared_key = "abc123"
+#     }
+# }
