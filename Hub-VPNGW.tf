@@ -102,6 +102,7 @@ resource "azurerm_virtual_network_peering" "TF_Peering_Cluster2Hub" {
 
 # Peering between Hub Vnet and Cluster Vnet
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_peering
+# cf. https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-peering-gateway-transit
 
 resource "azurerm_virtual_network_peering" "TF_Peering_Hub2Cluster" {
   name                      = "Peer-HubVNet-to-ClusterVNet"
@@ -116,6 +117,7 @@ resource "azurerm_virtual_network_peering" "TF_Peering_Hub2Cluster" {
 
 # Peering between PC Vnet and hub Vnet
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_peering
+# cf. https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-peering-gateway-transit
 resource "azurerm_virtual_network_peering" "TF_Peering_PC2Hub" {
   name                      = "Peer-PCVNet-to-HubVNet"
   resource_group_name       = azurerm_resource_group.TF_RG.name
