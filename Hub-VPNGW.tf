@@ -75,6 +75,8 @@ resource "azurerm_virtual_network_gateway" "TF_HubVPNGW" {
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/local_network_gateway
 # The local network gateway is a specific object that represents your on-premises location (the site) for routing purposes.
 # The local network gateway object is deployed in Azure, not to your on-premises location.
+# When you created that VPN connection and identified the subnets in your on prem environment, 
+# Azure auto creates routes as system defaults
 
 resource "azurerm_local_network_gateway" "TF_HubLocalGW" {
   name                = "Hub-LocalGW"
