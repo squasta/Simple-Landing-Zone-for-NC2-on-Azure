@@ -82,6 +82,11 @@ You can use **infracost** (available on https://www.infracost.io/) to check the 
 
  Please have a look of metal instances prices here : https://azuremarketplace.microsoft.com/en-us/marketplace/apps/nutanixinc.nc2_azure?tab=overview. Pricing is per instance-hour consumed for each instance, from the time an instance is launched until it is terminated or stopped. 
 
+About Virtual WAN pricing
+https://learn.microsoft.com/en-us/azure/virtual-wan/pricing-concepts
+https://azure.microsoft.com/en-gb/pricing/details/virtual-wan/ 
+
+
  Notes : 
  - you don't need Azure Bastion or Jumbox 24/7. You can simply enable or disable these resources in configuration.tfvars file (EnableJumboxVM | 0= disabled , 1=enabled) 
  - you don't need "On prem" Virtual Machine 24/7. You can simply enable or disable these resources in configuration.tfvars file (EnableVM4testingNetwork_OnPremises | 0= disabled , 1=enabled) 
