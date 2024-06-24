@@ -239,6 +239,8 @@ resource "azurerm_virtual_network_gateway_connection" "TF_OnPremHubConn" {
   virtual_network_gateway_id      = azurerm_virtual_network_gateway.TF_OnPremVPNGW.id
   peer_virtual_network_gateway_id = azurerm_virtual_network_gateway.TF_HubVPNGW.id
   shared_key = var.VPNSiteToSiteSharedKey
+  depends_on = [ azurerm_virtual_network_gateway.TF_HubVPNGW, azurerm_virtual_network_gateway.TF_OnPremVPNGW]
+
 }
 
 # VPN Connection between hub and on prem
@@ -253,5 +255,6 @@ resource "azurerm_virtual_network_gateway_connection" "TF_HubOnPremConn" {
   virtual_network_gateway_id      = azurerm_virtual_network_gateway.TF_HubVPNGW.id
   peer_virtual_network_gateway_id = azurerm_virtual_network_gateway.TF_OnPremVPNGW.id
   shared_key = var.VPNSiteToSiteSharedKey
+  depends_on = [ azurerm_virtual_network_gateway.TF_HubVPNGW, azurerm_virtual_network_gateway.TF_OnPremVPNGW]
 }
 
