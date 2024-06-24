@@ -74,7 +74,13 @@ terraform destroy --var-file=configuration.tfvars
 
 It's very cheap to test and customize this simple landing zone.
 
-You can use **infracost** (available on https://www.infracost.io/) to check the estimate price for 1 month. Here is an exemple for Azure Germany West Central region
+You can use **infracost** (available on https://www.infracost.io/) to check the estimate price for 1 month.
+
+```bash
+infracost breakdown --path .
+```
+
+ Here is an exemple for Azure Germany West Central region
 
  :exclamation: Important : this landing zone cost estimation does not include the cost of Azure Baremetal instance(s) used as node(s) in the Nutanix Cluster. 
 
