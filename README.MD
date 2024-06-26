@@ -1,6 +1,15 @@
 ## Nutanix Cloud Cluster (NC2) on Azure - Simple Landing Zone for POC
 
-This repo contains Terraform files to deploy all Azure network components needed to deploy Nutanix Cloud Cluster(NC2) on Azure Baremetal. This branch include a Hub VNet, a VNet to simulate an On Prem network, a Site to Site VPN between on premises and Hub.
+
+-------- WORK IN PROGRESS -------
+
+
+
+This repo contains Terraform files to deploy all Azure network components needed to deploy Nutanix Cloud Cluster(NC2) on Azure Baremetal.
+
+This is for the scenario with an interconnexion with a VPN site to Site (Azure Gateway) and Hub and Spoke topology without vWAN
+
+ This branch include a Hub VNet, a VNet to simulate an On Prem network, a Site to Site VPN between on premises and Hub.
 
 <img width='400' src='./images/PlaneLZ.png'/> 
 

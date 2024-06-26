@@ -25,3 +25,6 @@ HubVNetName= "hub-vnet-germanywestcentral"
 VPNSiteToSiteSharedKey="SharedKey123"
 EnableVM4testingNetwork_OnPremises=0
 EnableVM4testingNetwork_HubVnet=0
+FGWVnetName="fgw-vnet-germanywestcentral"
+NATGwFGWName="fgw-nat-gw-germanywestcentral"
+PublicIPFGWName="publicIP-fgw-nat-gw-germanywestcentral"

@@ -15,7 +15,8 @@
 ### VNet and SubNet : https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-creating-a-vnet-and-subnet-in-azure-t.html
 ### NAT Gateway : https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-creating-a-nat-gateway-in-azure-t.html
 
-
+#This Landing zone is for VPN S2S interconnection (using Azure VPN gateway) a Hub and no vWAN
+# https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-setting-up-networking-infrastructure-in-azure-c.html
 
 ###
 ### DEFINITION OF MANDATORY NETWORK RESOURCES FOR NC2 Cluster deployment in Azure
@@ -142,31 +143,6 @@ resource "azurerm_subnet" "TF_Subnet_Cluster_PC" {
 }
 
 
-# Subnet fgw-external-subnet
-# This subnet is external subnet where is connected external NIC of Flow Gateway (that is an Azure Virtual Machine)
-# This Subnet must associated with an Azure NAT Gateway 
-# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
-resource "azurerm_subnet" "TF_Fgw_External_Subnet" {
-  name                 = var.FgwExternalSubnetName
-  resource_group_name  = azurerm_resource_group.TF_RG.name
-  virtual_network_name = azurerm_virtual_network.TF_PC_VNet.name
-  address_prefixes     = ["10.1.2.0/24"]
-  private_endpoint_network_policies_enabled = false
-}
-
-
-# Subnet fgw-internal-subnet
-# This subnet is internal subnet where is connected internal NIC of Flow Gateway (that is an Azure Virtual Machine)
-# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
-resource "azurerm_subnet" "TF_Fgw_Internal_Subnet" {
-  name                 = var.FgwInternalSubnetName
-  resource_group_name  = azurerm_resource_group.TF_RG.name
-  virtual_network_name = azurerm_virtual_network.TF_PC_VNet.name
-  address_prefixes     = ["10.1.3.0/24"]
-  private_endpoint_network_policies_enabled = false
-}
-
-
 # Subnet bgp-subnet
 # This subnet is BGP subnet where are connected BGP Speaker/GW (that are Azure Virtual Machine)
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
@@ -241,6 +217,94 @@ resource "azurerm_subnet_nat_gateway_association" "TF_Subnet_NATGw_Association_P
 }
 
 
+
+
+
+
+#### in the configuration VPN + no vWAN, you need a dedicated network for the Flow Gateway
+# 2 subnets in this vnet, a NAT gateway, a public IP associated to NAT Gateway
+# and peering....
+
+## Flow Gateway (FGW) Virtual Network
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network
+
+resource "azurerm_virtual_network" "TF_FGW_VNet" {
+  name                = var.FGWVnetName
+  location            = azurerm_resource_group.TF_RG.location
+  resource_group_name = azurerm_resource_group.TF_RG.name
+  address_space       = ["10.2.0.0/16"]
+  dns_servers         = var.vnet_dns_adresses    
+}
+
+# Subnet fgw-external-subnet
+# This subnet is external subnet where is connected external NIC of Flow Gateway (that is an Azure Virtual Machine)
+# This Subnet must associated with an Azure NAT Gateway 
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
+resource "azurerm_subnet" "TF_Fgw_External_Subnet" {
+  name                 = var.FgwExternalSubnetName
+  resource_group_name  = azurerm_resource_group.TF_RG.name
+  virtual_network_name = azurerm_virtual_network.TF_FGW_VNet.name
+  address_prefixes     = ["10.2.0.0/24"]
+  private_endpoint_network_policies_enabled = false
+}
+
+# Subnet fgw-internal-subnet
+# This subnet is internal subnet where is connected internal NIC of Flow Gateway (that is an Azure Virtual Machine)
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
+resource "azurerm_subnet" "TF_Fgw_Internal_Subnet" {
+  name                 = var.FgwInternalSubnetName
+  resource_group_name  = azurerm_resource_group.TF_RG.name
+  virtual_network_name = azurerm_virtual_network.TF_FGW_VNet.name
+  address_prefixes     = ["10.2.1.0/24"]
+  private_endpoint_network_policies_enabled = false
+}
+
+# Azure NAT Gateway for FGW VNet (attached to FgwExternalSubnet)
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway
+# cf. https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-creating-a-nat-gateway-in-azure-t.html
+resource "azurerm_nat_gateway" "TF_NATGw_FGW" {
+  name                    = var.NATGwFGWName
+  location                = azurerm_resource_group.TF_RG.location
+  resource_group_name     = azurerm_resource_group.TF_RG.name
+  sku_name                = "Standard"  # this is the only option available now
+  tags = {
+    fastpathenabled = "true"
+  }
+}
+
+# Azure Public IP for NAT Gateway FGW Network
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip
+resource "azurerm_public_ip" "TF_NATGw_PublicIP_FGW" {
+  name                = var.PublicIPFGWName
+  location            = azurerm_resource_group.TF_RG.location
+  resource_group_name = azurerm_resource_group.TF_RG.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+
+# NAT Gateway (FGW ) and Public IP (FGW) Association
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway_public_ip_association
+resource "azurerm_nat_gateway_public_ip_association" "TF_NATGw_PublicIP_Association_FGW" {
+  nat_gateway_id       = azurerm_nat_gateway.TF_NATGw_FGW.id
+  public_ip_address_id = azurerm_public_ip.TF_NATGw_PublicIP_FGW.id
+}
+
+
+# Subnet and NAT Gateway Association (FGW NAT GW + FGW external Subnet)
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_nat_gateway_association
+resource "azurerm_subnet_nat_gateway_association" "TF_Subnet_NATGw_Association_PC" {
+  subnet_id      = azurerm_subnet.TF_Fgw_External_Subnet.id
+  nat_gateway_id = azurerm_nat_gateway.TF_NATGw_FGW.id
+}
+
+
+
+
+###
+### PEERING Between VNets
+###
+
+
 # Peering between Cluster VNet and PC VNet
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_peering
 
@@ -260,3 +324,48 @@ resource "azurerm_virtual_network_peering" "TF_Peering_PC2Cluster" {
   virtual_network_name      = azurerm_virtual_network.TF_PC_VNet.name
   remote_virtual_network_id = azurerm_virtual_network.TF_Cluster_VNet.id
 }
+
+
+# Peering between Cluster VNet and FGW VNet
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_peering
+
+resource "azurerm_virtual_network_peering" "TF_Peering_Cluster2FGW" {
+  name                      = "Peer-ClusterVNet-to-FGWVNet"
+  resource_group_name       = azurerm_resource_group.TF_RG.name
+  virtual_network_name      = azurerm_virtual_network.TF_Cluster_VNet.name
+  remote_virtual_network_id = azurerm_virtual_network.TF_FGW_VNet.id
+}
+
+
+# Peering between FGW VNet and Cluster VNet
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_peering
+
+resource "azurerm_virtual_network_peering" "TF_Peering_FGW2Cluster" {
+  name                      = "Peer-FGWVNet-to-ClusterVNet"
+  resource_group_name       = azurerm_resource_group.TF_RG.name
+  virtual_network_name      = azurerm_virtual_network.TF_FGW_VNet.name
+  remote_virtual_network_id = azurerm_virtual_network.TF_Cluster_VNet.id
+}
+
+
+# Peering between PC VNet and FGW VNet
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_peering
+
+resource "azurerm_virtual_network_peering" "TF_Peering_PC2FGW" {
+  name                      = "Peer-PCVNet-to-FGWVNet"
+  resource_group_name       = azurerm_resource_group.TF_RG.name
+  virtual_network_name      = azurerm_virtual_network.TF_PC_VNet.name
+  remote_virtual_network_id = azurerm_virtual_network.TF_FGW_VNet.id
+}
+
+
+# Peering between FGW VNet and PC VNet
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_peering
+
+resource "azurerm_virtual_network_peering" "TF_Peering_FGW2PC" {
+  name                      = "Peer-FGWVNet-to-PCVNet"
+  resource_group_name       = azurerm_resource_group.TF_RG.name
+  virtual_network_name      = azurerm_virtual_network.TF_FGW_VNet.name
+  remote_virtual_network_id = azurerm_virtual_network.TF_PC_VNet.id
+}
+

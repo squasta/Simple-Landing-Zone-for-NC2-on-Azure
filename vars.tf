@@ -60,6 +60,11 @@ variable "FgwInternalSubnetName" {
   description = "Name of Internal Subnet in PC VNet for Flow Gateway"  
 }
 
+variable "FGWVnetName" {
+  type = string
+  description = "Name of VNet for Flow Gateway"    
+}
+
 variable "BGPSubnetName" {
   type = string
   description = "Name of BGP Subnet in PC VNet for BGP VM"  
@@ -84,6 +89,19 @@ variable "PublicIPPCName" {
   type = string
   description = "Name of Azure Public IP used by NAT Gateway in PC VNet"    
 }
+
+
+variable "NATGwFGWName" {
+  type = string
+  description = "Name of NAT Gateway for FGW VNet (External FGW subnet)"  
+  
+}
+
+variable "PublicIPFGWName" {
+  type = string
+  description = "Name of Azure Public IP used by NAT Gateway in FGW VNet"    
+}
+
 
 variable "PublicBastionIPName" {
   type = string
