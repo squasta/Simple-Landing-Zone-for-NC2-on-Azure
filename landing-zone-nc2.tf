@@ -143,17 +143,6 @@ resource "azurerm_subnet" "TF_Subnet_Cluster_PC" {
 }
 
 
-# Subnet bgp-subnet
-# This subnet is BGP subnet where are connected BGP Speaker/GW (that are Azure Virtual Machine)
-# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
-# cf. https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-networking-configurations-c.html 
-resource "azurerm_subnet" "TF_BGP_Subnet" {
-  name                 = var.BGPSubnetName
-  resource_group_name  = azurerm_resource_group.TF_RG.name
-  virtual_network_name = azurerm_virtual_network.TF_PC_VNet.name
-  address_prefixes     = ["10.1.4.0/24"]
-  private_endpoint_network_policies_enabled = false
-}
 
 # Subnet AzureBastionSubnet
 # This subnet is for Azure Bastion
@@ -258,6 +247,19 @@ resource "azurerm_subnet" "TF_Fgw_Internal_Subnet" {
   address_prefixes     = ["10.2.1.0/24"]
   private_endpoint_network_policies_enabled = false
 }
+
+# Subnet bgp-subnet
+# This subnet is BGP subnet where are connected BGP Speaker/GW (that are Azure Virtual Machine)
+# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
+# cf. https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-networking-configurations-c.html 
+resource "azurerm_subnet" "TF_BGP_Subnet" {
+  name                 = var.BGPSubnetName
+  resource_group_name  = azurerm_resource_group.TF_RG.name
+  virtual_network_name = azurerm_virtual_network.TF_FGW_VNet.name
+  address_prefixes     = ["10.2.2.0/24"]
+  private_endpoint_network_policies_enabled = false
+}
+
 
 # Azure NAT Gateway for FGW VNet (attached to FgwExternalSubnet)
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway
