@@ -182,7 +182,7 @@ resource "azurerm_public_ip" "TF_NATGw_PublicIP_PC" {
 }
 
 
-# NAT Gateway (Cluster) and Public IP (Cluster) Association
+# NAT Gateway (PC) and Public IP (PC) Association
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway_public_ip_association
 resource "azurerm_nat_gateway_public_ip_association" "TF_NATGw_PublicIP_Association_PC" {
   nat_gateway_id       = azurerm_nat_gateway.TF_NATGw_PC.id
@@ -196,17 +196,6 @@ resource "azurerm_subnet_nat_gateway_association" "TF_Subnet_NATGw_Association_C
   subnet_id      = azurerm_subnet.TF_Subnet_Cluster_PC.id
   nat_gateway_id = azurerm_nat_gateway.TF_NATGw_PC.id
 }
-
-
-# Subnet and NAT Gateway Association (PC NAT GW + FGW external Subnet)
-# cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_nat_gateway_association
-resource "azurerm_subnet_nat_gateway_association" "TF_Subnet_NATGw_Association_PC" {
-  subnet_id      = azurerm_subnet.TF_Fgw_External_Subnet.id
-  nat_gateway_id = azurerm_nat_gateway.TF_NATGw_PC.id
-}
-
-
-
 
 
 
