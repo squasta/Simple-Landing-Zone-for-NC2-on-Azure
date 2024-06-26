@@ -33,6 +33,10 @@ Edit [configuration.tfvars](configuration.tfvars) to define your Azure resources
 
 If you want to define your own IP ranges, edit [landing-zone-nc2.tf](landing-zone-nc2.tf) (I will change that later to put everything as a variable)
  
+<img width='800' src='./images/AzureLZVPNNoWAN.png'/> 
+
+If you want to connect to Prism Element or Prism Central through Internet, there is an option to enable an Azure Bastion instance and a Windows Server 2022 Virtual Machine Jumbox. You can also deploy as an option a virtual machine in the Hub Virtual Network and another in the "on premise" Virtual Network 
+
 
 1. Terraform Init phase  
 
@@ -53,10 +57,6 @@ terraform apply --var-file=configuration.tfvars
 ```
 
 4. Wait until the end of deployment (It should around an hour because of Azure VPN Gateway that meed around 1 hour to deploy)
-
-<img width='800' src='./images/AzureLZVPNNoWAN.png'/> 
-
-If you want to connect to Prism Element or Prism Central through Internet, there is an option to enable an Azure Bastion instance and a Windows Server 2022 Virtual Machine Jumbox. You can also deploy as an option a virtual machine in the Hub Virtual Network and another in the "on premise" Virtual Network 
 
 5. Go to Nutanix [NC2 Portal](https://cloud.nutanix.com) https://cloud.nutanix.com and start your Nutanix Cluster deployment wizard. In steps 4 (Network), 5 (Prism Central) and 6 (Flow Networking) select the Virtuals Networks and Subnets created in step 3 using terraform
 
