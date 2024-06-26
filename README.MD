@@ -43,7 +43,7 @@ terraform plan --var-file=configuration.tfvars
 terraform apply --var-file=configuration.tfvars
 ```
 
-4. Wait until the end of deployment (It should take less than 1 minute)
+4. Wait until the end of deployment (It should around an hour because of Azure VPN Gateway that meed around 1 hour to deploy)
 
 <img width='800' src='./images/AzureLZNC2VPN.png'/> 
 
@@ -60,6 +60,11 @@ If you want to connect to Prism Element or Prism Central through Internet, there
 <img width='600' src='./images/Step6.png'/> 
 
 6. After the deployment is successfull, you can add connectivity with on-premises or other Azure VNet or services by peering an Hub Vnet or Virtual vWAN vHub. If you enabled AzureBastion and Jumpbox VM, you can login to the Jumbox VM and connect Prism Element or Prism Central through a web browser.
+
+Notes : 
+ - you don't need Azure Bastion or Jumbox 24/7. You can simply enable or disable these resources in [configuration.tfvars](configuration.tfvars) file (EnableJumboxVM and EnableAzureBastion | 0= disabled , 1=enabled)
+ - you don't need "On prem" Virtual Machine 24/7. You can simply enable or disable these resources in [configuration.tfvars](configuration.tfvars) file (EnableVM4testingNetwork_OnPremises | 0= disabled , 1=enabled) 
+ - you don't need "On Hub" Virtual Machine 24/7. You can simply enable or disable these resources in [configuration.tfvars](configuration.tfvars) file (EnableVM4testingNetwork_HubVnet | 0= disabled , 1=enabled) 
 
 7. Use the solution and configure Nutanix features like VPC, categories...
 
@@ -88,8 +93,4 @@ infracost breakdown --path .
 
  Please have a look of metal instances prices here : https://azuremarketplace.microsoft.com/en-us/marketplace/apps/nutanixinc.nc2_azure?tab=overview. Pricing is per instance-hour consumed for each instance, from the time an instance is launched until it is terminated or stopped. 
 
- Notes : 
- - you don't need Azure Bastion or Jumbox 24/7. You can simply enable or disable these resources in configuration.tfvars file (EnableJumboxVM | 0= disabled , 1=enabled) 
- - you don't need "On prem" Virtual Machine 24/7. You can simply enable or disable these resources in configuration.tfvars file (EnableVM4testingNetwork_OnPremises | 0= disabled , 1=enabled) 
- - you don't need "On Hub" Virtual Machine 24/7. You can simply enable or disable these resources in configuration.tfvars file (EnableVM4testingNetwork_HubVnet | 0= disabled , 1=enabled) 
-
+ 
