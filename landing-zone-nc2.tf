@@ -245,7 +245,7 @@ resource "azurerm_subnet" "TF_BGP_Subnet" {
   name                 = var.BGPSubnetName
   resource_group_name  = azurerm_resource_group.TF_RG.name
   virtual_network_name = azurerm_virtual_network.TF_FGW_VNet.name
-  address_prefixes     = ["10.2.2.0/24"]
+  address_prefixes     = ["10.2.2.0/28"]
   private_endpoint_network_policies_enabled = false
 }
 
