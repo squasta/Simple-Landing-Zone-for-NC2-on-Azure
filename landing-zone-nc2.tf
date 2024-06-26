@@ -294,7 +294,7 @@ resource "azurerm_nat_gateway_public_ip_association" "TF_NATGw_PublicIP_Associat
 
 # Subnet and NAT Gateway Association (FGW NAT GW + FGW external Subnet)
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_nat_gateway_association
-resource "azurerm_subnet_nat_gateway_association" "TF_Subnet_NATGw_Association_PC" {
+resource "azurerm_subnet_nat_gateway_association" "TF_Subnet_NATGw_Association_FGW" {
   subnet_id      = azurerm_subnet.TF_Fgw_External_Subnet.id
   nat_gateway_id = azurerm_nat_gateway.TF_NATGw_FGW.id
 }
