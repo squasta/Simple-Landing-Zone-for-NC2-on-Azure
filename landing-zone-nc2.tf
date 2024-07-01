@@ -35,11 +35,12 @@ resource "azurerm_resource_group" "TF_RG" {
 # NC2 does not support Use of 192.168.5.0/24 CIDR for the VNet being used to deploy the NC2 on Azure cluster
 # All Nutanix nodes use that CIDR for communication between the CVM and the installed hypervisor.
 # cf. https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-getting-ready-for-deployment-c.html
+# cf. https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-configuring-vnets-subnets-and-nat-gateway-t.html
 resource "azurerm_virtual_network" "TF_Cluster_VNet" {
   name                = var.ClusterVnetName
   location            = azurerm_resource_group.TF_RG.location
   resource_group_name = azurerm_resource_group.TF_RG.name
-  address_space       = ["10.0.0.0/16"]
+  address_space       = var.ClusterVnetCIDR
   dns_servers         = var.vnet_dns_adresses    
 }
 
@@ -47,13 +48,14 @@ resource "azurerm_virtual_network" "TF_Cluster_VNet" {
 # Bare metal Subnet with delegation to Azure Bare
 # This subnet must be delegated to a servive named Microsoft.BareMetal/AzureHostedService
 # This Subnet must associated with an Azure NAT Gateway 
+# cf. https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-configuring-vnets-subnets-and-nat-gateway-t.html
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
 
 resource "azurerm_subnet" "TF_SubNet_Cluster" {
   name                 = var.ClusterSubnetName
   resource_group_name  = azurerm_resource_group.TF_RG.name
   virtual_network_name = azurerm_virtual_network.TF_Cluster_VNet.name
-  address_prefixes     = ["10.0.1.0/24"]
+  address_prefixes     = var.ClusterSubnetCIDR
   private_endpoint_network_policies_enabled = false
 
   delegation {
@@ -115,7 +117,7 @@ resource "azurerm_virtual_network" "TF_PC_VNet" {
   name                = var.PCVnetName
   location            = azurerm_resource_group.TF_RG.location
   resource_group_name = azurerm_resource_group.TF_RG.name
-  address_space       = ["10.1.0.0/16"]
+  address_space       = var.PCVnetCIDR
   dns_servers         = var.vnet_dns_adresses      
 }
 
@@ -129,7 +131,7 @@ resource "azurerm_subnet" "TF_Subnet_Cluster_PC" {
   name                 = var.PCSubnetName
   resource_group_name  = azurerm_resource_group.TF_RG.name
   virtual_network_name = azurerm_virtual_network.TF_PC_VNet.name
-  address_prefixes     = ["10.1.1.0/24"]
+  address_prefixes     = var.PCSubnetCIDR
   private_endpoint_network_policies_enabled = false
 
   delegation {
@@ -152,7 +154,7 @@ resource "azurerm_subnet" "TF_Azure_Bastion_Subnet" {
   name                 = "AzureBastionSubnet"
   resource_group_name  = azurerm_resource_group.TF_RG.name
   virtual_network_name = azurerm_virtual_network.TF_PC_VNet.name
-  address_prefixes     = ["10.1.5.0/26"]
+  address_prefixes     = var.AzureBastionSubnetCIDR
   private_endpoint_network_policies_enabled = false
 }
 
@@ -210,7 +212,7 @@ resource "azurerm_virtual_network" "TF_FGW_VNet" {
   name                = var.FGWVnetName
   location            = azurerm_resource_group.TF_RG.location
   resource_group_name = azurerm_resource_group.TF_RG.name
-  address_space       = ["10.2.0.0/16"]
+  address_space       = var.FGWVnetCIDR
   dns_servers         = var.vnet_dns_adresses    
 }
 
@@ -222,7 +224,7 @@ resource "azurerm_subnet" "TF_Fgw_External_Subnet" {
   name                 = var.FgwExternalSubnetName
   resource_group_name  = azurerm_resource_group.TF_RG.name
   virtual_network_name = azurerm_virtual_network.TF_FGW_VNet.name
-  address_prefixes     = ["10.2.0.0/24"]
+  address_prefixes     = var.FgwExternalSubnetCIDR
   private_endpoint_network_policies_enabled = false
 }
 
@@ -233,7 +235,7 @@ resource "azurerm_subnet" "TF_Fgw_Internal_Subnet" {
   name                 = var.FgwInternalSubnetName
   resource_group_name  = azurerm_resource_group.TF_RG.name
   virtual_network_name = azurerm_virtual_network.TF_FGW_VNet.name
-  address_prefixes     = ["10.2.1.0/24"]
+  address_prefixes     = var.FgwInternalSubnetCIDR
   private_endpoint_network_policies_enabled = false
 }
 
@@ -245,7 +247,7 @@ resource "azurerm_subnet" "TF_BGP_Subnet" {
   name                 = var.BGPSubnetName
   resource_group_name  = azurerm_resource_group.TF_RG.name
   virtual_network_name = azurerm_virtual_network.TF_FGW_VNet.name
-  address_prefixes     = ["10.2.2.0/28"]
+  address_prefixes     = var.BGPSubnetCIDR
   private_endpoint_network_policies_enabled = false
 }
 
@@ -304,6 +306,9 @@ resource "azurerm_virtual_network_peering" "TF_Peering_Cluster2PC" {
   resource_group_name       = azurerm_resource_group.TF_RG.name
   virtual_network_name      = azurerm_virtual_network.TF_Cluster_VNet.name
   remote_virtual_network_id = azurerm_virtual_network.TF_PC_VNet.id
+  timeouts {
+    create = "45m"
+  }
 }
 
 
@@ -314,6 +319,10 @@ resource "azurerm_virtual_network_peering" "TF_Peering_PC2Cluster" {
   resource_group_name       = azurerm_resource_group.TF_RG.name
   virtual_network_name      = azurerm_virtual_network.TF_PC_VNet.name
   remote_virtual_network_id = azurerm_virtual_network.TF_Cluster_VNet.id
+  depends_on = [ azurerm_virtual_network_peering.TF_Peering_Cluster2PC ]
+  timeouts {
+    create = "45m"
+  }
 }
 
 
@@ -325,6 +334,9 @@ resource "azurerm_virtual_network_peering" "TF_Peering_Cluster2FGW" {
   resource_group_name       = azurerm_resource_group.TF_RG.name
   virtual_network_name      = azurerm_virtual_network.TF_Cluster_VNet.name
   remote_virtual_network_id = azurerm_virtual_network.TF_FGW_VNet.id
+  timeouts {
+    create = "45m"
+  }
 }
 
 
@@ -336,6 +348,10 @@ resource "azurerm_virtual_network_peering" "TF_Peering_FGW2Cluster" {
   resource_group_name       = azurerm_resource_group.TF_RG.name
   virtual_network_name      = azurerm_virtual_network.TF_FGW_VNet.name
   remote_virtual_network_id = azurerm_virtual_network.TF_Cluster_VNet.id
+  depends_on = [ azurerm_virtual_network_peering.TF_Peering_Cluster2FGW ]
+  timeouts {
+    create = "45m"
+  }
 }
 
 
@@ -347,6 +363,9 @@ resource "azurerm_virtual_network_peering" "TF_Peering_PC2FGW" {
   resource_group_name       = azurerm_resource_group.TF_RG.name
   virtual_network_name      = azurerm_virtual_network.TF_PC_VNet.name
   remote_virtual_network_id = azurerm_virtual_network.TF_FGW_VNet.id
+  timeouts {
+    create = "45m"
+  }
 }
 
 
@@ -358,5 +377,9 @@ resource "azurerm_virtual_network_peering" "TF_Peering_FGW2PC" {
   resource_group_name       = azurerm_resource_group.TF_RG.name
   virtual_network_name      = azurerm_virtual_network.TF_FGW_VNet.name
   remote_virtual_network_id = azurerm_virtual_network.TF_PC_VNet.id
+  depends_on = [ azurerm_virtual_network_peering.TF_Peering_PC2FGW ]
+  timeouts {
+    create = "45m"
+  }
 }
 

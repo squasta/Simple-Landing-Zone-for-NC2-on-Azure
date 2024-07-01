@@ -98,6 +98,9 @@ resource "azurerm_virtual_network_peering" "TF_Peering_Cluster2Hub" {
   use_remote_gateways = true
   # `allow_gateway_transit` must be set to false for vnet Global Peering
   depends_on = [ azurerm_virtual_network.TF_HubVNet, azurerm_virtual_network.TF_Cluster_VNet ]
+  timeouts {
+    create = "45m"
+  }
 }
 
 # Peering between Hub Vnet and Cluster Vnet
@@ -111,7 +114,10 @@ resource "azurerm_virtual_network_peering" "TF_Peering_Hub2Cluster" {
   remote_virtual_network_id = azurerm_virtual_network.TF_Cluster_VNet.id
   allow_virtual_network_access = true
   allow_gateway_transit = true
-  depends_on = [ azurerm_virtual_network.TF_HubVNet, azurerm_virtual_network.TF_Cluster_VNet ]
+  depends_on = [ azurerm_virtual_network.TF_HubVNet, azurerm_virtual_network.TF_Cluster_VNet, azurerm_virtual_network_peering.TF_Peering_Cluster2Hub ]
+  timeouts {
+    create = "45m"
+  }
 }
 
 
@@ -126,7 +132,10 @@ resource "azurerm_virtual_network_peering" "TF_Peering_PC2Hub" {
   allow_virtual_network_access = true
   use_remote_gateways = true
   # `allow_gateway_transit` must be set to false for vnet Global Peering
-  depends_on = [ azurerm_virtual_network.TF_HubVNet, azurerm_virtual_network.TF_PC_VNet ]
+  depends_on = [ azurerm_virtual_network.TF_HubVNet, azurerm_virtual_network.TF_PC_VNet, azurerm_virtual_network_gateway.TF_HubVPNGW ]
+  timeouts {
+    create = "60m"
+  }
 }
 
 
@@ -140,7 +149,10 @@ resource "azurerm_virtual_network_peering" "TF_Peering_Hub2PC" {
   remote_virtual_network_id = azurerm_virtual_network.TF_PC_VNet.id
   allow_virtual_network_access = true
   allow_gateway_transit = true
-  depends_on = [ azurerm_virtual_network.TF_HubVNet, azurerm_virtual_network.TF_PC_VNet ]
+  depends_on = [ azurerm_virtual_network.TF_HubVNet, azurerm_virtual_network.TF_PC_VNet, azurerm_virtual_network_peering.TF_Peering_PC2Hub  ]
+  timeouts {
+    create = "45m"
+  }
 }
 
 
@@ -148,28 +160,34 @@ resource "azurerm_virtual_network_peering" "TF_Peering_Hub2PC" {
 # Peering between FGW Vnet and Hub Vnet
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_peering
 
-# resource "azurerm_virtual_network_peering" "TF_Peering_FGW2Hub" {
-#   name                      = "Peer-FGWVNet-to-HubVNet"
-#   resource_group_name       = azurerm_resource_group.TF_RG.name
-#   virtual_network_name      = azurerm_virtual_network.TF_FGW_VNet.name
-#   remote_virtual_network_id = azurerm_virtual_network.TF_HubVNet.id
-#   allow_virtual_network_access = true
-#   use_remote_gateways = true
-#   depends_on = [ azurerm_virtual_network.TF_HubVNet, azurerm_virtual_network.TF_FGW_VNet ]
-# }
+resource "azurerm_virtual_network_peering" "TF_Peering_FGW2Hub" {
+  name                      = "Peer-FGWVNet-to-HubVNet"
+  resource_group_name       = azurerm_resource_group.TF_RG.name
+  virtual_network_name      = azurerm_virtual_network.TF_FGW_VNet.name
+  remote_virtual_network_id = azurerm_virtual_network.TF_HubVNet.id
+  allow_virtual_network_access = true
+  use_remote_gateways = true
+  depends_on = [ azurerm_virtual_network.TF_HubVNet, azurerm_virtual_network.TF_FGW_VNet, azurerm_virtual_network_gateway.TF_HubVPNGW ]
+  timeouts {
+    create = "60m"
+  }
+}
 
 # Peering between Hub Vnet and FGW Vnet
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_peering
 
-# resource "azurerm_virtual_network_peering" "TF_Peering_Hub2FGW" {
-#   name                      = "Peer-HubVNet-to-FGWVNet"
-#   resource_group_name       = azurerm_resource_group.TF_RG.name
-#   virtual_network_name      = azurerm_virtual_network.TF_HubVNet.name
-#   remote_virtual_network_id = azurerm_virtual_network.TF_FGW_VNet.id
-#   allow_virtual_network_access = true
-#   allow_gateway_transit = true
-#   depends_on = [ azurerm_virtual_network.TF_HubVNet, azurerm_virtual_network.TF_FGW_VNet ]
-# }
+resource "azurerm_virtual_network_peering" "TF_Peering_Hub2FGW" {
+  name                      = "Peer-HubVNet-to-FGWVNet"
+  resource_group_name       = azurerm_resource_group.TF_RG.name
+  virtual_network_name      = azurerm_virtual_network.TF_HubVNet.name
+  remote_virtual_network_id = azurerm_virtual_network.TF_FGW_VNet.id
+  allow_virtual_network_access = true
+  allow_gateway_transit = true
+  depends_on = [ azurerm_virtual_network.TF_HubVNet, azurerm_virtual_network.TF_FGW_VNet, azurerm_virtual_network_peering.TF_Peering_FGW2Hub ]
+  timeouts {
+    create = "45m"
+  }
+}
 
 
 

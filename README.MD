@@ -1,8 +1,15 @@
 ## Nutanix Cloud Cluster (NC2) on Azure - Simple Landing Zone for POC
 
-----------------------------------------
--------- WORK IN PROGRESS !!!!!! -------
-----------------------------------------
+ __      _______  _   _    _____ ___   _____            _ _   _                 _         __          __     _   _ 
+ \ \    / /  __ \| \ | |  / ____|__ \ / ____|          (_) | | |               | |        \ \        / /\   | \ | |
+  \ \  / /| |__) |  \| | | (___    ) | (___   __      ___| |_| |__   ___  _   _| |_  __   _\ \  /\  / /  \  |  \| |
+   \ \/ / |  ___/| . ` |  \___ \  / / \___ \  \ \ /\ / / | __| '_ \ / _ \| | | | __| \ \ / /\ \/  \/ / /\ \ | . ` |
+    \  /  | |    | |\  |  ____) |/ /_ ____) |  \ V  V /| | |_| | | | (_) | |_| | |_   \ V /  \  /\  / ____ \| |\  |
+     \/   |_|    |_| \_| |_____/|____|_____/    \_/\_/ |_|\__|_| |_|\___/ \__,_|\__|   \_/    \/  \/_/    \_\_| \_|
+
+------------------------------------------
+--------  :construction:	WORK IN PROGRESS !!!!!! :construction:	-------
+------------------------------------------
 
 
 This repo contains Terraform files to deploy all Azure network components needed to deploy Nutanix Cloud Cluster(NC2) on Azure Baremetal.
@@ -29,9 +36,8 @@ You can also clone this repo in your Azure Cloud Shell (that has all tools insta
 
 ## Step by step operations
 
-Edit [configuration.tfvars](configuration.tfvars) to define your Azure resources names.
+Edit [configuration.tfvars](configuration.tfvars) to define your Azure resources names, your networks CIDR...
 
-If you want to define your own IP ranges, edit [landing-zone-nc2.tf](landing-zone-nc2.tf) (I will change that later to put everything as a variable)
  
 <img width='800' src='./images/AzureLZVPNNoWAN.png'/> 
 
@@ -55,6 +61,8 @@ terraform plan --var-file=configuration.tfvars
 ```bash
 terraform apply --var-file=configuration.tfvars
 ```
+
+Important :exclamation: : If the deployment finish with an error on peering, just re execute the previous command ! 
 
 4. Wait until the end of deployment (It should around an hour because of Azure VPN Gateway that meed around 1 hour to deploy)
 
