@@ -1,11 +1,7 @@
 ## Nutanix Cloud Cluster (NC2) on Azure - Simple Landing Zone for POC
 
- __      _______  _   _    _____ ___   _____            _ _   _                 _         __          __     _   _ 
- \ \    / /  __ \| \ | |  / ____|__ \ / ____|          (_) | | |               | |        \ \        / /\   | \ | |
-  \ \  / /| |__) |  \| | | (___    ) | (___   __      ___| |_| |__   ___  _   _| |_  __   _\ \  /\  / /  \  |  \| |
-   \ \/ / |  ___/| . ` |  \___ \  / / \___ \  \ \ /\ / / | __| '_ \ / _ \| | | | __| \ \ / /\ \/  \/ / /\ \ | . ` |
-    \  /  | |    | |\  |  ____) |/ /_ ____) |  \ V  V /| | |_| | | | (_) | |_| | |_   \ V /  \  /\  / ____ \| |\  |
-     \/   |_|    |_| \_| |_____/|____|_____/    \_/\_/ |_|\__|_| |_|\___/ \__,_|\__|   \_/    \/  \/_/    \_\_| \_|
+## Scenario interconnexion with a Site to Site VPN on a Hub and Spoke topology (NO Azure Virtual WAN)
+
 
 ------------------------------------------
 --------  :construction:	WORK IN PROGRESS !!!!!! :construction:	-------
@@ -62,9 +58,10 @@ terraform plan --var-file=configuration.tfvars
 terraform apply --var-file=configuration.tfvars
 ```
 
-Important :exclamation: : If the deployment finish with an error on peering, just re execute the previous command ! 
 
 4. Wait until the end of deployment (It should around an hour because of Azure VPN Gateway that meed around 1 hour to deploy)
+
+Important :exclamation: : If the deployment finishes with an error on peering, just re execute the previous command (step 3) !
 
 5. Go to Nutanix [NC2 Portal](https://cloud.nutanix.com) https://cloud.nutanix.com and start your Nutanix Cluster deployment wizard. In steps 4 (Network), 5 (Prism Central) and 6 (Flow Networking) select the Virtuals Networks and Subnets created in step 3 using terraform
 
@@ -92,7 +89,7 @@ terraform destroy --var-file=configuration.tfvars
 
 ## How much does it cost to test this landing zone ?
 
-It's very cheap to test and customize this simple landing zone.
+It's cheap to test and customize this simple landing zone. Of course if you don't  need some resources (like VM or Bastion) except for testing, you should disabled them.
 
 You can use **infracost** (available on https://www.infracost.io/) to check the estimate price for 1 month.
 
@@ -100,9 +97,9 @@ You can use **infracost** (available on https://www.infracost.io/) to check the 
 infracost breakdown --path .
 ```
 
- Here is an exemple for Azure Germany West Central region
+ Here is an example for Azure Germany West Central region
 
- :exclamation: Important : this landing zone cost estimation does not include the cost of Azure Baremetal instance(s) used as node(s) in the Nutanix Cluster. 
+ :exclamation: Important : this landing zone cost estimation does not include the cost of Azure Baremetal instance(s) used as node(s) in the Nutanix Cluster because Baremetal pricing is not yet available through Azure Pricing API.
 
 <img width='800' src='./images/InfracostNC2LDZAzure.png'/> 
 

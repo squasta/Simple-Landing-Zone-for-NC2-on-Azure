@@ -99,7 +99,7 @@ resource "azurerm_virtual_network_peering" "TF_Peering_Cluster2Hub" {
   # `allow_gateway_transit` must be set to false for vnet Global Peering
   depends_on = [ azurerm_virtual_network.TF_HubVNet, azurerm_virtual_network.TF_Cluster_VNet ]
   timeouts {
-    create = "45m"
+    create = "60m"
   }
 }
 
@@ -116,7 +116,7 @@ resource "azurerm_virtual_network_peering" "TF_Peering_Hub2Cluster" {
   allow_gateway_transit = true
   depends_on = [ azurerm_virtual_network.TF_HubVNet, azurerm_virtual_network.TF_Cluster_VNet, azurerm_virtual_network_peering.TF_Peering_Cluster2Hub ]
   timeouts {
-    create = "45m"
+    create = "60m"
   }
 }
 
@@ -151,7 +151,7 @@ resource "azurerm_virtual_network_peering" "TF_Peering_Hub2PC" {
   allow_gateway_transit = true
   depends_on = [ azurerm_virtual_network.TF_HubVNet, azurerm_virtual_network.TF_PC_VNet, azurerm_virtual_network_peering.TF_Peering_PC2Hub  ]
   timeouts {
-    create = "45m"
+    create = "60m"
   }
 }
 
@@ -185,7 +185,7 @@ resource "azurerm_virtual_network_peering" "TF_Peering_Hub2FGW" {
   allow_gateway_transit = true
   depends_on = [ azurerm_virtual_network.TF_HubVNet, azurerm_virtual_network.TF_FGW_VNet, azurerm_virtual_network_peering.TF_Peering_FGW2Hub ]
   timeouts {
-    create = "45m"
+    create = "60m"
   }
 }
 
