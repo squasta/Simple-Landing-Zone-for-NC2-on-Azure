@@ -307,7 +307,7 @@ resource "azurerm_virtual_network_peering" "TF_Peering_Cluster2PC" {
   virtual_network_name      = azurerm_virtual_network.TF_Cluster_VNet.name
   remote_virtual_network_id = azurerm_virtual_network.TF_PC_VNet.id
   timeouts {
-    create = "45m"
+    create = "60m"
   }
 }
 
@@ -321,7 +321,7 @@ resource "azurerm_virtual_network_peering" "TF_Peering_PC2Cluster" {
   remote_virtual_network_id = azurerm_virtual_network.TF_Cluster_VNet.id
   depends_on = [ azurerm_virtual_network_peering.TF_Peering_Cluster2PC ]
   timeouts {
-    create = "45m"
+    create = "60m"
   }
 }
 
@@ -335,7 +335,7 @@ resource "azurerm_virtual_network_peering" "TF_Peering_Cluster2FGW" {
   virtual_network_name      = azurerm_virtual_network.TF_Cluster_VNet.name
   remote_virtual_network_id = azurerm_virtual_network.TF_FGW_VNet.id
   timeouts {
-    create = "45m"
+    create = "60m"
   }
 }
 
@@ -350,7 +350,7 @@ resource "azurerm_virtual_network_peering" "TF_Peering_FGW2Cluster" {
   remote_virtual_network_id = azurerm_virtual_network.TF_Cluster_VNet.id
   depends_on = [ azurerm_virtual_network_peering.TF_Peering_Cluster2FGW ]
   timeouts {
-    create = "45m"
+    create = "60m"
   }
 }
 
@@ -364,7 +364,7 @@ resource "azurerm_virtual_network_peering" "TF_Peering_PC2FGW" {
   virtual_network_name      = azurerm_virtual_network.TF_PC_VNet.name
   remote_virtual_network_id = azurerm_virtual_network.TF_FGW_VNet.id
   timeouts {
-    create = "45m"
+    create = "60m"
   }
 }
 
@@ -379,7 +379,7 @@ resource "azurerm_virtual_network_peering" "TF_Peering_FGW2PC" {
   remote_virtual_network_id = azurerm_virtual_network.TF_PC_VNet.id
   depends_on = [ azurerm_virtual_network_peering.TF_Peering_PC2FGW ]
   timeouts {
-    create = "45m"
+    create = "60m"
   }
 }
 
