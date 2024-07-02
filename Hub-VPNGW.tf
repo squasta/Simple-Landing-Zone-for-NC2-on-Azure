@@ -52,14 +52,16 @@ resource "azurerm_public_ip" "TF_HubVPNGWPublicIP" {
 # A VPN Gateway in Hub VNet in GatewaySubnet
 # cf. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_gateway
 # Important : deploying a new VPN Gateway needs about 30-45 minutes for deployment
-
+# Microsoft does not support the Basic SKU and any gateway in an Active-Active mode.
+# Only VpnGw1 and higher VPN gateway SKUs are supported
+# cf. https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-setting-up-vpnexpressroute-t.html
 resource "azurerm_virtual_network_gateway" "TF_HubVPNGW" {
   name                = "Hub-VPNGW"
   location            = var.Location
   resource_group_name = azurerm_resource_group.TF_RG.name
   type                = "Vpn"
   vpn_type            = "RouteBased"
-  sku                 = "VpnGw1"
+  sku                 = "VpnGw1"    # choose a non AZ aware SKU
   active_active       = false
 
   ip_configuration {
