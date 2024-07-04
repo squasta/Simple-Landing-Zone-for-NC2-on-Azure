@@ -71,7 +71,7 @@ Important :exclamation: : If the deployment finishes with an error on peering, j
 
 <img width='600' src='./images/Step6.png'/> 
 
-6. After the deployment is successfull, you can add connectivity with on-premises or other Azure VNet or services by peering an Hub Vnet or Virtual vWAN vHub. If you enabled AzureBastion and Jumpbox VM, you can login to the Jumbox VM and connect Prism Element or Prism Central through a web browser.
+6. After the deployment is successfull, you can test connectivity with on-premises or other Azure VNet using "on prem"VM and "on Hub VM". If you enabled AzureBastion and Jumpbox VM, you can login to the Jumbox VM and connect Prism Element or Prism Central through a web browser. 
 
 Notes : 
  - you don't need Azure Bastion or Jumbox 24/7. You can simply enable or disable these resources in [configuration.tfvars](configuration.tfvars) file (EnableJumboxVM and EnableAzureBastion | 0= disabled , 1=enabled)
@@ -79,8 +79,11 @@ Notes :
  - you don't need "On Hub" Virtual Machine 24/7. You can simply enable or disable these resources in [configuration.tfvars](configuration.tfvars) file (EnableVM4testingNetwork_HubVnet | 0= disabled , 1=enabled) 
 
 7. Use the solution and configure Nutanix features like VPC, categories...
+   - Create and configure your Nutanix VPC
+   - Deploy User VM on Nutanix Cluster
+   - Test connectivity of UVM. (cf. https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-network-connectivity-uvm-c.html)
 
-8. When you want to destroy the Nutanix Cluster, use the NC2 Portal (https://cloud.nutanix.com) to terminate it.
+8. When you want to destroy the Nutanix Cloud Cluster, use the NC2 Portal (https://cloud.nutanix.com) to terminate it.
 
 9. After cluster terminaison, you can destroy the landing zone using the following command : 
 ```bash
