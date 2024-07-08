@@ -2,12 +2,6 @@
 
 ## Scenario interconnexion with a Site to Site VPN on a Hub and Spoke topology (NO Azure Virtual WAN)
 
-
-------------------------------------------
---------  :construction:	WORK IN PROGRESS !!!!!! :construction:	-------
-------------------------------------------
-
-
 This repo contains Terraform files to deploy all Azure network components needed to deploy Nutanix Cloud Cluster(NC2) on Azure Baremetal.
 
 This is for the scenario with an interconnexion with a VPN site to Site (Azure Gateway) and Hub and Spoke topology without vWAN
@@ -28,7 +22,7 @@ This is for the scenario with an interconnexion with a VPN site to Site (Azure G
    And you need to activate features that are still in preview and add extension aks-preview to azure CLI (az extension add --name aks-preview)
 - Terraform CLI 1.5 or > : <https://www.terraform.io/downloads.html>
 
-You can also clone this repo in your Azure Cloud Shell (that has all tools installed)
+You can also clone this repo in your [Azure Cloud Shell](https://shell.azure.com/) (that has all tools installed)
 
 ## Step by step operations
 
@@ -71,7 +65,7 @@ Important :exclamation: : If the deployment finishes with an error on peering, j
 
 <img width='600' src='./images/Step6.png'/> 
 
-6. After the deployment is successfull, you can test connectivity with on-premises or other Azure VNet using "on prem"VM and "on Hub VM". If you enabled AzureBastion and Jumpbox VM, you can login to the Jumbox VM and connect Prism Element or Prism Central through a web browser. 
+6. After the Landing Zone deployment is successfull, you can test connectivity with on-premises or other Azure VNet using "on prem"VM and "on Hub VM" (:warning: You will have to delete later these VMs BEFORE starting the NC2 cluster deployement through NC2 Portal). If you enabled AzureBastion and Jumpbox VM, you can login to the Jumbox VM and connect Prism Element or Prism Central through a web browser. 
 
 Notes : 
  - you don't need Azure Bastion or Jumbox 24/7. You can simply enable or disable these resources in [configuration.tfvars](configuration.tfvars) file (EnableJumboxVM and EnableAzureBastion | 0= disabled , 1=enabled)
