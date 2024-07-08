@@ -31,7 +31,7 @@ Edit [configuration.tfvars](configuration.tfvars) to define your Azure resources
  
 <img width='800' src='./images/AzureLZVPNNoWAN.png'/> 
 
-If you want to connect to Prism Element or Prism Central through Internet, there is an option to enable an Azure Bastion instance and a Windows Server 2022 Virtual Machine Jumbox. You can also deploy as an option a virtual machine in the Hub Virtual Network and another in the "on premise" Virtual Network.
+If you want to connect to Prism Element or Prism Central through Internet, there is an option to enable an [Azure Bastion](https://learn.microsoft.com/en-us/azure/bastion/bastion-overview) instance and a Windows Server 2022 Virtual Machine Jumbox. You can also deploy as an option a virtual machine in the Hub Virtual Network and another in the "on premise" Virtual Network for testing network connectivity.
 
 
 1. Terraform Init phase  
@@ -70,12 +70,12 @@ Important :exclamation: : If the deployment finishes with an error on peering, j
 6. After the Landing Zone deployment is successfull, you can test connectivity with on-premises or other Azure VNet using "on prem"VM and "on Hub VM". If you enabled AzureBastion and Jumpbox VM, you can login to the Jumbox VM and connect Prism Element or Prism Central through a web browser. 
 
 Notes : 
- - you don't need Azure Bastion or Jumbox 24/7. You can simply enable or disable these resources in [configuration.tfvars](configuration.tfvars) file (EnableJumboxVM and EnableAzureBastion | 0= disabled , 1=enabled)
- - you don't need "On prem" Virtual Machine 24/7. You can simply enable or disable these resources in [configuration.tfvars](configuration.tfvars) file (EnableVM4testingNetwork_OnPremises | 0= disabled , 1=enabled) 
- - you don't need "On Hub" Virtual Machine 24/7. You can simply enable or disable these resources in [configuration.tfvars](configuration.tfvars) file (EnableVM4testingNetwork_HubVnet | 0= disabled , 1=enabled) 
+ - If you don't need Azure Bastion or Jumbox 24/7. You can simply enable or disable these resources in [configuration.tfvars](configuration.tfvars) file (EnableJumboxVM and EnableAzureBastion | 0= disabled , 1=enabled)
+ - If you don't need "On prem" Virtual Machine 24/7. You can simply enable or disable these resources in [configuration.tfvars](configuration.tfvars) file (EnableVM4testingNetwork_OnPremises | 0= disabled , 1=enabled) 
+ - If you don't need "On Hub" Virtual Machine 24/7. You can simply enable or disable these resources in [configuration.tfvars](configuration.tfvars) file (EnableVM4testingNetwork_HubVnet | 0= disabled , 1=enabled) 
 
 7. Use the solution and configure Nutanix features like VPC, categories...
-   - Create and configure your Nutanix VPC
+   - Create and configure your Nutanix VPC (All configurations step are [here](https://squasta.github.io/configurationvpcazure.html))
    - Deploy User VM on Nutanix Cluster
    - Test connectivity of UVM. (cf. https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Azure:nc2-clusters-azure-network-connectivity-uvm-c.html)
 
