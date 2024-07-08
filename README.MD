@@ -4,7 +4,7 @@
 
 This repo contains Terraform files to deploy all Azure network components needed to deploy Nutanix Cloud Cluster(NC2) on Azure Baremetal.
 
-This is for the scenario with an interconnexion with a VPN site to Site (Azure Gateway) and Hub and Spoke topology without vWAN
+This is for the scenario with an interconnexion with a VPN site to Site (Azure Gateway) and [Hub and Spoke topology without vWAN](https://learn.microsoft.com/en-us/azure/architecture/networking/architecture/hub-spoke?tabs=cli)
 
  This branch include a Hub VNet, a VNet to simulate an On Prem network, a Site to Site VPN between on premises and Hub.
 
