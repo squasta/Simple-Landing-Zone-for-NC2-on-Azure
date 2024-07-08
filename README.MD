@@ -1,6 +1,6 @@
 ## Nutanix Cloud Cluster (NC2) on Azure - Simple Landing Zone for POC
 
-## Scenario interconnexion with an Azure ExpressRoute on a Hub and Spoke topology (with or without Azure Virtual WAN)
+## Scenario interconnection with an Azure ExpressRoute on a Hub and Spoke topology (with or without Azure Virtual WAN)
 
 This repo contains Terraform files to deploy all Azure network components needed to deploy Nutanix Cloud Cluster(NC2) on Azure Baremetal.
 
