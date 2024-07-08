@@ -38,7 +38,7 @@ resource "azurerm_virtual_network" "TF_Cluster_VNet" {
   name                = var.ClusterVnetName
   location            = azurerm_resource_group.TF_RG.location
   resource_group_name = azurerm_resource_group.TF_RG.name
-  address_space       = ["10.0.0.0/16"]
+  address_space       = var.ClusterVnetCIDR
   dns_servers         = var.vnet_dns_adresses    
 }
 
@@ -52,8 +52,8 @@ resource "azurerm_subnet" "TF_SubNet_Cluster" {
   name                 = var.ClusterSubnetName
   resource_group_name  = azurerm_resource_group.TF_RG.name
   virtual_network_name = azurerm_virtual_network.TF_Cluster_VNet.name
-  address_prefixes     = ["10.0.1.0/24"]
-  private_endpoint_network_policies_enabled = false
+  address_prefixes     = var.ClusterSubnetCIDR
+  # private_endpoint_network_policies_enabled = false
 
   delegation {
     name = "delegation"
@@ -114,7 +114,7 @@ resource "azurerm_virtual_network" "TF_PC_VNet" {
   name                = var.PCVnetName
   location            = azurerm_resource_group.TF_RG.location
   resource_group_name = azurerm_resource_group.TF_RG.name
-  address_space       = ["10.1.0.0/16"]
+  address_space       = var.PCVnetCIDR
   dns_servers         = var.vnet_dns_adresses      
 }
 
@@ -128,8 +128,8 @@ resource "azurerm_subnet" "TF_Subnet_Cluster_PC" {
   name                 = var.PCSubnetName
   resource_group_name  = azurerm_resource_group.TF_RG.name
   virtual_network_name = azurerm_virtual_network.TF_PC_VNet.name
-  address_prefixes     = ["10.1.1.0/24"]
-  private_endpoint_network_policies_enabled = false
+  address_prefixes     = var.PCSubnetCIDR
+  # private_endpoint_network_policies_enabled = false
 
   delegation {
   name = "delegation"
@@ -150,8 +150,8 @@ resource "azurerm_subnet" "TF_Fgw_External_Subnet" {
   name                 = var.FgwExternalSubnetName
   resource_group_name  = azurerm_resource_group.TF_RG.name
   virtual_network_name = azurerm_virtual_network.TF_PC_VNet.name
-  address_prefixes     = ["10.1.2.0/24"]
-  private_endpoint_network_policies_enabled = false
+  address_prefixes     = var.FgwExternalSubnetCIDR
+  # private_endpoint_network_policies_enabled = false
 }
 
 
@@ -162,8 +162,8 @@ resource "azurerm_subnet" "TF_Fgw_Internal_Subnet" {
   name                 = var.FgwInternalSubnetName
   resource_group_name  = azurerm_resource_group.TF_RG.name
   virtual_network_name = azurerm_virtual_network.TF_PC_VNet.name
-  address_prefixes     = ["10.1.3.0/24"]
-  private_endpoint_network_policies_enabled = false
+  address_prefixes     = var.FgwInternalSubnetCIDR
+  # private_endpoint_network_policies_enabled = false
 }
 
 
@@ -175,8 +175,8 @@ resource "azurerm_subnet" "TF_BGP_Subnet" {
   name                 = var.BGPSubnetName
   resource_group_name  = azurerm_resource_group.TF_RG.name
   virtual_network_name = azurerm_virtual_network.TF_PC_VNet.name
-  address_prefixes     = ["10.1.4.0/24"]
-  private_endpoint_network_policies_enabled = false
+  address_prefixes     = var.BGPSubnetCIDR
+  # private_endpoint_network_policies_enabled = false
 }
 
 # Subnet AzureBastionSubnet
@@ -187,8 +187,8 @@ resource "azurerm_subnet" "TF_Azure_Bastion_Subnet" {
   name                 = "AzureBastionSubnet"
   resource_group_name  = azurerm_resource_group.TF_RG.name
   virtual_network_name = azurerm_virtual_network.TF_PC_VNet.name
-  address_prefixes     = ["10.1.5.0/26"]
-  private_endpoint_network_policies_enabled = false
+  address_prefixes     = var.AzureBastionSubnetCIDR
+  # private_endpoint_network_policies_enabled = false
 }
 
 

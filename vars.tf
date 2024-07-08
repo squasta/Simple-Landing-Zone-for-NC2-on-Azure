@@ -1,14 +1,27 @@
 
-####
-#### VARIABLES DEFINITION
-#### please enter or check your values in configuration.tfvars
-####
 
+#  __      __        _       _     _           
+#  \ \    / /       (_)     | |   | |          
+#   \ \  / /_ _ _ __ _  __ _| |__ | | ___  ___ 
+#    \ \/ / _` | '__| |/ _` | '_ \| |/ _ \/ __|
+#     \  / (_| | |  | | (_| | |_) | |  __/\__ \
+#      \/ \__,_|_|  |_|\__,_|_.__/|_|\___||___/
+#
+#### VARIABLES DEFINITION with default values
+#### please enter or check your values in configuration.tfvars  
+
+# Resource Group Name where all resources will be created
 variable "ResourceGroupName" {
   type = string
   description = "Resource Group Name"
 }
 
+# Azure Region Name
+# cf. https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/azure-regions
+# Azure CLI command to get the list of Azure Regions :
+# az account list-locations -o table
+# Supported regions for Nutanix Clusters on Azure (NC2) :
+#  https://learn.microsoft.com/en-us/azure/baremetal-infrastructure/workloads/nc2-on-azure/supported-instances-and-regions
 variable "Location" {
   type = string
   description = "Azure Region Name"
@@ -24,6 +37,13 @@ variable "ClusterVnetName" {
   description = "Name of VNet for NC2 Hosts"
 }
 
+# This is the list of DNS servers that will be used by the VNet for name resolution
+# especially usefull for baremetal hosts and Prism Central VM to resolve names for connecting NC2 Portal (MCM Portal)
+# In Azure, if you don't provide any DNS server, the default Azure DNS servers will be used (168.63.129.16)
+# https://learn.microsoft.com/en-us/azure/virtual-network/what-is-ip-address-168-63-129-16
+# using Google DNS (8.8.8.8), or Cloudflare (1.1.1.1) or Quad9 (9.9.9.9) is possible and more simple
+# if you are using your own DNS server(s), be sure that communication is possible and Forwarding enabled to 
+# resolve public DNS names
 variable "vnet_dns_adresses" {
   default = [
     "8.8.8.8",
@@ -33,6 +53,19 @@ variable "vnet_dns_adresses" {
     condition = length(var.vnet_dns_adresses) > 0
     error_message = "At least one DNS server must be provided"
   }
+}
+
+variable "ClusterVnetCIDR" {
+  type = list(string)
+  description = "CIDR for Cluster VNet"
+  default = ["10.0.0.0/16"]  
+}
+
+variable "ClusterSubnetCIDR" {
+  type = list(string)
+  description = "CIDR for Cluster Subnet"
+  default = ["10.0.1.0/24"]
+  
 }
 
 variable "ClusterSubnetName" {
@@ -45,14 +78,34 @@ variable "PCVnetName" {
   description = "Name of VNet for PC, Flow Gateway"  
 }
 
+variable "PCVnetCIDR" {
+  type = list(string)
+  description = "CIDR for PC VNet"
+  default = ["10.1.0.0/16"]
+}
+
 variable "PCSubnetName" {
   type = string
   description = "Name of Subnet for Prism Central (PC)"  
 }
 
+variable "PCSubnetCIDR" {
+  type = list(string)
+  description = "CIDR for PC Subnet"
+  default = ["10.1.1.0/24"] 
+}
+
+
 variable "FgwExternalSubnetName" {
   type = string
   description = "Name of External Subnet in PC VNet for Flow Gateway"  
+}
+
+variable "FgwExternalSubnetCIDR" {
+  type = list(string)
+  description = "CIDR for External Subnet in PC VNet for Flow Gateway"
+  default = ["10.1.2.0/24"]
+  
 }
 
 variable "FgwInternalSubnetName" {
@@ -60,9 +113,27 @@ variable "FgwInternalSubnetName" {
   description = "Name of Internal Subnet in PC VNet for Flow Gateway"  
 }
 
+variable "FgwInternalSubnetCIDR" {
+  type = list(string)
+  description = "CIDR for Internal Subnet in PC VNet for Flow Gateway"
+  default = ["10.1.3.0/24"]
+}
+
 variable "BGPSubnetName" {
   type = string
   description = "Name of BGP Subnet in PC VNet for BGP VM"  
+}
+
+variable "BGPSubnetCIDR" {
+  type = list(string)
+  description = "CIDR for BGP Subnet in PC VNet for BGP VM"
+  default = ["10.1.4.0/24"]
+}
+
+variable "AzureBastionSubnetCIDR" {
+  type = list(string)
+  description = "CIDR for Azure Bastion Subnet"
+  default = ["10.1.5.0/26"]
 }
 
 variable "NATGwClusterName" {
