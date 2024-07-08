@@ -31,7 +31,7 @@ Edit [configuration.tfvars](configuration.tfvars) to define your Azure resources
  
 <img width='800' src='./images/AzureLZVPNNoWAN.png'/> 
 
-If you want to connect to Prism Element or Prism Central through Internet, there is an option to enable an Azure Bastion instance and a Windows Server 2022 Virtual Machine Jumbox. You can also deploy as an option a virtual machine in the Hub Virtual Network and another in the "on premise" Virtual Network 
+If you want to connect to Prism Element or Prism Central through Internet, there is an option to enable an Azure Bastion instance and a Windows Server 2022 Virtual Machine Jumbox. You can also deploy as an option a virtual machine in the Hub Virtual Network and another in the "on premise" Virtual Network.
 
 
 1. Terraform Init phase  
@@ -57,6 +57,8 @@ terraform apply --var-file=configuration.tfvars
 
 Important :exclamation: : If the deployment finishes with an error on peering, just re execute the previous command (step 3) !
 
+:warning: You have to delete VMs used for testing network connectivity BEFORE starting the NC2 cluster deployment through NC2 Portal. If you don't do that you will have issue during the deployment of Flow Gateway.
+
 5. Go to Nutanix [NC2 Portal](https://cloud.nutanix.com) https://cloud.nutanix.com and start your Nutanix Cluster deployment wizard. In steps 4 (Network), 5 (Prism Central) and 6 (Flow Networking) select the Virtuals Networks and Subnets created in step 3 using terraform
 
 <img width='600' src='./images/Step4.png'/> 
@@ -65,7 +67,7 @@ Important :exclamation: : If the deployment finishes with an error on peering, j
 
 <img width='600' src='./images/Step6.png'/> 
 
-6. After the Landing Zone deployment is successfull, you can test connectivity with on-premises or other Azure VNet using "on prem"VM and "on Hub VM" (:warning: You will have to delete later these VMs BEFORE starting the NC2 cluster deployement through NC2 Portal). If you enabled AzureBastion and Jumpbox VM, you can login to the Jumbox VM and connect Prism Element or Prism Central through a web browser. 
+6. After the Landing Zone deployment is successfull, you can test connectivity with on-premises or other Azure VNet using "on prem"VM and "on Hub VM". If you enabled AzureBastion and Jumpbox VM, you can login to the Jumbox VM and connect Prism Element or Prism Central through a web browser. 
 
 Notes : 
  - you don't need Azure Bastion or Jumbox 24/7. You can simply enable or disable these resources in [configuration.tfvars](configuration.tfvars) file (EnableJumboxVM and EnableAzureBastion | 0= disabled , 1=enabled)
