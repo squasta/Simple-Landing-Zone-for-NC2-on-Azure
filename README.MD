@@ -27,7 +27,7 @@ If you are using VPN Site to Site (Azure VPN Gateway) to hybrid with your on-pre
    And you need to activate features that are still in preview and add extension aks-preview to azure CLI (az extension add --name aks-preview)
 - Terraform CLI 1.5 or > : <https://www.terraform.io/downloads.html>
 
-You can also clone this repo in your Azure Cloud Shell (that has all tools installed)
+You can also clone this repo in your [Azure Cloud Shell](https://shell.azure.com) (that has all tools installed)
 
 ## Step by step operations
 
