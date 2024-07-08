@@ -4,7 +4,7 @@
 
 This repo contains Terraform files to deploy all Azure network components needed to deploy Nutanix Cloud Cluster(NC2) on Azure Baremetal.
 
-This is for the scenario with an interconnexion with a VPN site to Site ([Azure Gateway](https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpngateways)) and [Hub and Spoke topology without vWAN](https://learn.microsoft.com/en-us/azure/architecture/networking/architecture/hub-spoke?tabs=cli)
+This is for the scenario with an interconnexion with a VPN site to Site ([Azure VPN Gateway](https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpngateways)) and [Hub and Spoke topology without vWAN](https://learn.microsoft.com/en-us/azure/architecture/networking/architecture/hub-spoke?tabs=cli)
 
  This branch include a Hub VNet, a VNet to simulate an On Prem network, a Site to Site VPN between on premises and Hub.
 
@@ -53,11 +53,16 @@ terraform apply --var-file=configuration.tfvars
 ```
 
 
-4. Wait until the end of deployment (It should around an hour because of Azure VPN Gateway that meed around 1 hour to deploy)
+4. Wait until the end of deployment (It should take around an hour because of Azure VPN Gateway that needs around 50 minutes to deploy)
 
 Important :exclamation: : If the deployment finishes with an error on peering, just re execute the previous command (step 3) !
 
-:warning: You have to delete VMs used for testing network connectivity BEFORE starting the NC2 cluster deployment through NC2 Portal. If you don't do that you will have issue during the deployment of Flow Gateway.
+After the Landing Zone deployment is successfull, you can test connectivity with on-premises or other Azure VNet using "on prem"VM and "on Hub VM".
+
+ - If you don't need "On prem" Virtual Machine 24/7. You can simply enable or disable these resources in [configuration.tfvars](configuration.tfvars) file (EnableVM4testingNetwork_OnPremises | 0= disabled , 1=enabled) 
+ - If you don't need "On Hub" Virtual Machine 24/7. You can simply enable or disable these resources in [configuration.tfvars](configuration.tfvars) file (EnableVM4testingNetwork_HubVnet | 0= disabled , 1=enabled) 
+
+:warning: You have to delete VMs used for testing network connectivity **BEFORE** starting the NC2 cluster deployment through NC2 Portal. If you don't do that, you will have issue during the deployment of Flow Gateway.
 
 5. Go to Nutanix [NC2 Portal](https://cloud.nutanix.com) https://cloud.nutanix.com and start your Nutanix Cluster deployment wizard. In steps 4 (Network), 5 (Prism Central) and 6 (Flow Networking) select the Virtuals Networks and Subnets created in step 3 using terraform
 
@@ -67,12 +72,11 @@ Important :exclamation: : If the deployment finishes with an error on peering, j
 
 <img width='600' src='./images/Step6.png'/> 
 
-6. After the Landing Zone deployment is successfull, you can test connectivity with on-premises or other Azure VNet using "on prem"VM and "on Hub VM". If you enabled AzureBastion and Jumpbox VM, you can login to the Jumbox VM and connect Prism Element or Prism Central through a web browser. 
+6. If you enabled AzureBastion and Jumpbox VM, you can login to the Jumbox VM and connect Prism Element or Prism Central through a web browser. 
 
 Notes : 
  - If you don't need Azure Bastion or Jumbox 24/7. You can simply enable or disable these resources in [configuration.tfvars](configuration.tfvars) file (EnableJumboxVM and EnableAzureBastion | 0= disabled , 1=enabled)
- - If you don't need "On prem" Virtual Machine 24/7. You can simply enable or disable these resources in [configuration.tfvars](configuration.tfvars) file (EnableVM4testingNetwork_OnPremises | 0= disabled , 1=enabled) 
- - If you don't need "On Hub" Virtual Machine 24/7. You can simply enable or disable these resources in [configuration.tfvars](configuration.tfvars) file (EnableVM4testingNetwork_HubVnet | 0= disabled , 1=enabled) 
+
 
 7. Use the solution and configure Nutanix features like VPC, categories...
    - Create and configure your Nutanix VPC (All configurations step are [here](https://squasta.github.io/configurationvpcazure.html))
