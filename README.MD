@@ -1,8 +1,17 @@
 ## Nutanix Cloud Cluster (NC2) on Azure - Simple Landing Zone for POC
 
-This repo contains Terraform files to deploy all Azure network components needed to deploy Nutanix Cloud Cluster(NC2) on Azure Baremetal
+This repo contains Terraform files to deploy all Azure network components needed to deploy Nutanix Cloud Cluster(NC2) on Azure Baremetal.
 
 <img width='400' src='./images/PlaneLZ.png'/> 
+
+:warning: :warning: :warning: This code applies for the following scenarios :
+- You access this cluster through an Azure ExpressRoute connection and a [Hub and Spoke Topology](https://learn.microsoft.com/en-us/azure/architecture/networking/architecture/hub-spoke?tabs=cli)
+- You access this cluster through an Azure ExpressRoute connection and [Hub and Spoke Topology with Azure vWAN](https://learn.microsoft.com/en-us/azure/architecture/networking/architecture/hub-spoke-vwan-architecture)
+
+<img width='800' src='./images/SupportedScenarios.png'/> 
+
+If you are using VPN Site to Site (Azure VPN Gateway) to hybrid with your on-premises Nutanix Cluster(s), please use the [vpn-novWAN branch of this repo](https://github.com/squasta/Simple-Landing-Zone-for-NC2-on-Azure/tree/vpn-novWAN).
+
 
 
 ## Prerequisites
@@ -61,7 +70,7 @@ If you want to connect to Prism Element or Prism Central through Internet, there
 
 6. After the deployment is successfull, you can add connectivity with on-premises or other Azure VNet or services by peering an Hub Vnet or Virtual vWAN vHub. If you enabled AzureBastion and Jumpbox VM, you can login to the Jumbox VM and connect Prism Element or Prism Central through a web browser.
 
-7. Use the solution and configure Nutanix features like VPC, categories...
+7. Use the solution and configure Nutanix features like [Flow VPC](https://squasta.github.io/configurationvpcazure.html), categories...
 
 8. When you want to destroy the Nutanix Cluster, use the NC2 Portal (https://cloud.nutanix.com) to terminate it.
 
