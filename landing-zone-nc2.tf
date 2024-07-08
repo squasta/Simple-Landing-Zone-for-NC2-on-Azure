@@ -259,4 +259,5 @@ resource "azurerm_virtual_network_peering" "TF_Peering_PC2Cluster" {
   resource_group_name       = azurerm_resource_group.TF_RG.name
   virtual_network_name      = azurerm_virtual_network.TF_PC_VNet.name
   remote_virtual_network_id = azurerm_virtual_network.TF_Cluster_VNet.id
+  depends_on = [ azurerm_virtual_network_peering.TF_Peering_Cluster2PC ]
 }

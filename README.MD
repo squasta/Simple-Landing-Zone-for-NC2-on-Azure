@@ -31,9 +31,9 @@ You can also clone this repo in your [Azure Cloud Shell](https://shell.azure.com
 
 ## Step by step operations
 
-Edit [configuration.tfvars](configuration.tfvars) to define your Azure resources names.
+Read the code and comments to understand what Azure resources will be created.
 
-If you want to define your own IP ranges, edit [landing-zone-nc2.tf](landing-zone-nc2.tf)  (I will change that later to put everything as a variable)
+Edit [configuration.tfvars](configuration.tfvars) to define your Azure resources names.
  
 
 1. Terraform Init phase  
