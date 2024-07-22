@@ -23,7 +23,7 @@ resource "azurerm_virtual_hub" "TF_Vhub" {
   location            = azurerm_resource_group.TF_RG.location
   virtual_wan_id      = azurerm_virtual_wan.TF_Vwan.id
   address_prefix      = "172.16.0.0/16"
-  sku                = "Basic"    # can be Basic or Standard. Basic is enough for testing with Site-to-Site VPN 
+  sku                 = "Basic"    # can be Basic or Standard. Basic is enough for testing with Site-to-Site VPN 
                                   # cf. https://learn.microsoft.com/en-us/azure/virtual-wan/virtual-wan-about#basicstandard
 }
 

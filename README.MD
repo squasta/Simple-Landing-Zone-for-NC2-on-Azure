@@ -1,23 +1,23 @@
 ## Nutanix Cloud Cluster (NC2) on Azure - Simple Landing Zone for POC
 
-<<<<<<< HEAD
-## Scenario interconnection with an Azure ExpressRoute on a Hub and Spoke topology (with or without Azure Virtual WAN)
+---- WORK IN PROGRESS ---- 
 
-This repo contains Terraform files to deploy all Azure network components needed to deploy Nutanix Cloud Cluster(NC2) on Azure Baremetal.
-=======
-This repo contains Terraform files to deploy all Azure network components needed to deploy Nutanix Cloud Cluster(NC2) on Azure Baremetal. This branch include a Hub VNet, a VNet to simulate an On Prem network, a Site to Site VPN between on premises and Hub.
->>>>>>> 4f5b39a8c680232a2c477ca485e37e77073acfa4
+## Scenario interconnection with a VPN Gateway on a Hub and Spoke topology (with Azure Virtual WAN)
+
+This repo contains Terraform files to deploy all Azure network components needed to deploy Nutanix Cloud Cluster(NC2) on Azure Baremetal. This branch include a vWAN vHub, a VNet to simulate an On Prem network, a Site to Site VPN between on premises and vHub.
+
 
 <img width='400' src='./images/PlaneLZ.png'/> 
 
 :warning: :warning: :warning: This code applies for the following scenarios :
-- You access this cluster through an **Azure ExpressRoute** connection and a [Hub and Spoke Topology](https://learn.microsoft.com/en-us/azure/architecture/networking/architecture/hub-spoke?tabs=cli)
+- You access this cluster through an **VPN Site to Site** connection and [Hub and Spoke Topology with Azure vWAN](https://learn.microsoft.com/en-us/azure/architecture/networking/architecture/hub-spoke-vwan-architecture)
 - You access this cluster through an **Azure ExpressRoute** connection and [Hub and Spoke Topology with Azure vWAN](https://learn.microsoft.com/en-us/azure/architecture/networking/architecture/hub-spoke-vwan-architecture)
 
 <img width='800' src='./images/SupportedScenarios.png'/> 
 
-If you are using VPN Site to Site (Azure VPN Gateway) to hybrid with your on-premises Nutanix Cluster(s), please use the [vpn-novWAN branch of this repo](https://github.com/squasta/Simple-Landing-Zone-for-NC2-on-Azure/tree/vpn-novWAN).
 
+If you are using VPN Site to Site (Azure VPN Gateway) to hybrid with your on-premises Nutanix Cluster(s), **without Azure vWAN**, please use the [vpn-novWAN branch of this repo](https://github.com/squasta/Simple-Landing-Zone-for-NC2-on-Azure/tree/vpn-novWAN).
+If you are using ExpressRoute to hybrid with your on-premises Nutanix Cluster(s) in standard Hub and Spoke topology, please use the [main branch of this repo](https://github.com/squasta/Simple-Landing-Zone-for-NC2-on-Azure/tree/main).
 
 
 ## Prerequisites
@@ -37,11 +37,7 @@ You can also clone this repo in your [Azure Cloud Shell](https://shell.azure.com
 
 Read the code and comments to understand what Azure resources will be created.
 
-<<<<<<< HEAD
 Edit [configuration.tfvars](configuration.tfvars) to define your Azure resources names.
-=======
-If you want to define your own IP ranges, edit [landing-zone-nc2.tf](landing-zone-nc2.tf) (I will change that later to put everything as a variable)
->>>>>>> 4f5b39a8c680232a2c477ca485e37e77073acfa4
  
 
 1. Terraform Init phase  
