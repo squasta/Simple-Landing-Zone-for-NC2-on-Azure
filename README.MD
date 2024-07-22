@@ -1,8 +1,12 @@
 ## Nutanix Cloud Cluster (NC2) on Azure - Simple Landing Zone for POC
 
+<<<<<<< HEAD
 ## Scenario interconnection with an Azure ExpressRoute on a Hub and Spoke topology (with or without Azure Virtual WAN)
 
 This repo contains Terraform files to deploy all Azure network components needed to deploy Nutanix Cloud Cluster(NC2) on Azure Baremetal.
+=======
+This repo contains Terraform files to deploy all Azure network components needed to deploy Nutanix Cloud Cluster(NC2) on Azure Baremetal. This branch include a Hub VNet, a VNet to simulate an On Prem network, a Site to Site VPN between on premises and Hub.
+>>>>>>> 4f5b39a8c680232a2c477ca485e37e77073acfa4
 
 <img width='400' src='./images/PlaneLZ.png'/> 
 
@@ -33,7 +37,11 @@ You can also clone this repo in your [Azure Cloud Shell](https://shell.azure.com
 
 Read the code and comments to understand what Azure resources will be created.
 
+<<<<<<< HEAD
 Edit [configuration.tfvars](configuration.tfvars) to define your Azure resources names.
+=======
+If you want to define your own IP ranges, edit [landing-zone-nc2.tf](landing-zone-nc2.tf) (I will change that later to put everything as a variable)
+>>>>>>> 4f5b39a8c680232a2c477ca485e37e77073acfa4
  
 
 1. Terraform Init phase  
@@ -56,11 +64,11 @@ terraform apply --var-file=configuration.tfvars
 
 4. Wait until the end of deployment (It should take less than 1 minute)
 
-<img width='800' src='./images/NC2AzureLZ.png'/> 
+<img width='800' src='./images/AzureLZNC2VPN.png'/> 
 
-If you want to connect to Prism Element or Prism Central through Internet, there is an option to enable an Azure Bastion instance and a Windows Server 2022 Virtual Machine Jumbox
+If you want to connect to Prism Element or Prism Central through Internet, there is an option to enable an Azure Bastion instance and a Windows Server 2022 Virtual Machine Jumbox. You can also deploy as an option a virtual machine in the Hub Virtual Network and another in the "on premise" Virtual Network 
 
-<img width='800' src='./images/NC2AzureLZ-bastion.png'/> 
+<img width='800' src='./images/AzureLZNC2VPNBastion.png'/> 
 
 5. Go to Nutanix [NC2 Portal](https://cloud.nutanix.com) https://cloud.nutanix.com and start your Nutanix Cluster deployment wizard. In steps 4 (Network), 5 (Prism Central) and 6 (Flow Networking) select the Virtuals Networks and Subnets created in step 3 using terraform
 
@@ -93,4 +101,13 @@ You can use **infracost** (available on https://www.infracost.io/) to check the 
 
  Please have a look of metal instances prices here : https://azuremarketplace.microsoft.com/en-us/marketplace/apps/nutanixinc.nc2_azure?tab=overview. Pricing is per instance-hour consumed for each instance, from the time an instance is launched until it is terminated or stopped. 
 
- Note : you don't need Azure Bastion or Jumbox 24/7. You can simply enable or disable these resources in configuration.tfvars file (0= disabled , 1=enabled) 
+About Virtual WAN pricing
+https://learn.microsoft.com/en-us/azure/virtual-wan/pricing-concepts
+https://azure.microsoft.com/en-gb/pricing/details/virtual-wan/ 
+
+
+ Notes : 
+ - you don't need Azure Bastion or Jumbox 24/7. You can simply enable or disable these resources in configuration.tfvars file (EnableJumboxVM | 0= disabled , 1=enabled) 
+ - you don't need "On prem" Virtual Machine 24/7. You can simply enable or disable these resources in configuration.tfvars file (EnableVM4testingNetwork_OnPremises | 0= disabled , 1=enabled) 
+ - you don't need "On Hub" Virtual Machine 24/7. You can simply enable or disable these resources in configuration.tfvars file (EnableVM4testingNetwork_HubVnet | 0= disabled , 1=enabled) 
+

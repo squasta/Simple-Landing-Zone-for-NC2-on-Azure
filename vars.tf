@@ -232,3 +232,34 @@ variable "AzureBastionSKU" {
   description = "Azure Bastion SKU"
   default = "Basic"
 }
+
+
+## Hub VNet name
+variable "HubVNetName" {
+  type = string
+  description = "A VNet named Hub-VNet"
+}
+
+## VPN site to site Shared Key
+variable "VPNSiteToSiteSharedKey" {
+  type = string
+  description = "Shared Key for VPN Site to Site"
+  sensitive = true
+}
+
+
+# Enable a Virtual Machine for testing network connectivity to On-Premises
+# 0 = disabled, 1 = enabled
+variable "EnableVM4testingNetwork_OnPremises" {
+  type = number
+  description = "Enable a Virtual Machine for testing network connectivity to On-Premises"
+  default = 0
+}
+
+# Enable a Virtual Machine for testing network connectivity to Hub VNet
+# 0 = disabled, 1 = enabled
+variable "EnableVM4testingNetwork_HubVnet" {
+  type = number
+  description = "Enable a Virtual Machine for testing network connectivity to Hub VNet"
+  default = 0
+}

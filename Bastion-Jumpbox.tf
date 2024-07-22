@@ -22,7 +22,8 @@ resource "azurerm_bastion_host" "TF_bastion_host" {
   name                = var.AzureBastionHostName
   location            = azurerm_resource_group.TF_RG.location
   resource_group_name = azurerm_resource_group.TF_RG.name
-  sku                 = var.AzureBastionSKU    
+  sku                 = var.AzureBastionSKU
+  ip_connect_enabled = true  # need a Standard SKU
   ip_configuration {
     name                 = "bastion-ip-config"
     subnet_id            = azurerm_subnet.TF_Azure_Bastion_Subnet.id
